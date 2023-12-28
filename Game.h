@@ -12,6 +12,8 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
 
+#include "Player.h"
+
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600

@@ -187,12 +187,13 @@ void Game::render() {
 	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
-	SDL_FillRect(screen, NULL, czarny);
 
+	/*
+	SDL_FillRect(screen, NULL, czarny);
 	DrawSurface(screen, eti,
 		SCREEN_WIDTH / 2 + sin(distance) * SCREEN_HEIGHT / 3,
 		SCREEN_HEIGHT / 2 + cos(distance) * SCREEN_HEIGHT / 3);
-
+	*/
 	fpsTimer += delta;
 	if (fpsTimer > 0.5) {
 		fps = frames * 2;
@@ -201,14 +202,20 @@ void Game::render() {
 	};
 
 	// tekst informacyjny / info text
+	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, czerwony, czarny);
 	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 36, czerwony, niebieski);
+	sprintf(text, "Czas trwania: %.1lf s", worldTime);
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
+	sprintf(text, "Wykonane punkty:");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
+	/*
 	sprintf(text, "Szablon drugiego zadania, czas trwania = %.1lf s  %.0lf klatek / s", worldTime, fps);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
 	sprintf(text, "Esc - wyjscie, \030 - przyspieszenie, \031 - zwolnienie");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
-
+	*/
 }
 
 void Game::update() {
