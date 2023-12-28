@@ -3,10 +3,79 @@
 #define CHARSET_PATH "./cs8x8.bmp"
 #define ETI_PATH "./eti.bmp"
 
+// narysowanie napisu txt na powierzchni screen, zaczynajπc od punktu (x, y)
+// charset to bitmapa 128x128 zawierajπca znaki
+void DrawString(SDL_Surface* screen, int x, int y, const char* text,
+	SDL_Surface* charset) {
+	int px, py, c;
+	SDL_Rect s, d;
+	s.w = 8;
+	s.h = 8;
+	d.w = 8;
+	d.h = 8;
+	while (*text) {
+		c = *text & 255;
+		px = (c % 16) * 8;
+		py = (c / 16) * 8;
+		s.x = px;
+		s.y = py;
+		d.x = x;
+		d.y = y;
+		SDL_BlitSurface(charset, &s, screen, &d);
+		x += 8;
+		text++;
+	};
+};
+
+
+// narysowanie na ekranie screen powierzchni sprite w punkcie (x, y)
+// (x, y) to punkt úrodka obrazka sprite na ekranie
+void DrawSurface(SDL_Surface* screen, SDL_Surface* sprite, int x, int y) {
+	SDL_Rect dest;
+	dest.x = x - sprite->w / 2;
+	dest.y = y - sprite->h / 2;
+	dest.w = sprite->w;
+	dest.h = sprite->h;
+	SDL_BlitSurface(sprite, NULL, screen, &dest);
+};
+
+
+// rysowanie pojedynczego pixela
+void DrawPixel(SDL_Surface* surface, int x, int y, Uint32 color) {
+	int bpp = surface->format->BytesPerPixel;
+	Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
+	*(Uint32*)p = color;
+};
+
+
+// rysowanie linii o d≥ugoúci l w pionie (gdy dx = 0, dy = 1) 
+// bπdü poziomie (gdy dx = 1, dy = 0)
+void DrawLine(SDL_Surface* screen, int x, int y, int l, int dx, int dy, Uint32 color) {
+	for (int i = 0; i < l; i++) {
+		DrawPixel(screen, x, y, color);
+		x += dx;
+		y += dy;
+	};
+};
+
+
+// rysowanie prostokπta o d≥ugoúci bokÛw l i k
+void DrawRectangle(SDL_Surface* screen, int x, int y, int l, int k,
+	Uint32 outlineColor, Uint32 fillColor) {
+	int i;
+	DrawLine(screen, x, y, k, 0, 1, outlineColor);
+	DrawLine(screen, x + l - 1, y, k, 0, 1, outlineColor);
+	DrawLine(screen, x, y, l, 1, 0, outlineColor);
+	DrawLine(screen, x, y + k - 1, l, 1, 0, outlineColor);
+	for (i = y + 1; i < y + k - 1; i++)
+		DrawLine(screen, x + 1, i, l - 2, 1, 0, fillColor);
+};
 
 Game::Game() {
 	init_screen();
+	load_graphics();
 	SDL_ShowCursor(SDL_DISABLE);
+	start();
 }
 
 void Game::init_screen() {
@@ -87,32 +156,9 @@ void Game::start() {
 
 		distance += etiSpeed * delta;
 
-		SDL_FillRect(screen, NULL, czarny);
+		render();
 
-		DrawSurface(screen, eti,
-			SCREEN_WIDTH / 2 + sin(distance) * SCREEN_HEIGHT / 3,
-			SCREEN_HEIGHT / 2 + cos(distance) * SCREEN_HEIGHT / 3);
-
-		fpsTimer += delta;
-		if (fpsTimer > 0.5) {
-			fps = frames * 2;
-			frames = 0;
-			fpsTimer -= 0.5;
-		};
-
-		// tekst informacyjny / info text
-		DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 36, czerwony, niebieski);
-
-		sprintf(text, "Szablon drugiego zadania, czas trwania = %.1lf s  %.0lf klatek / s", worldTime, fps);
-		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
-
-		sprintf(text, "Esc - wyjscie, \030 - przyspieszenie, \031 - zwolnienie");
-		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
-
-		SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
-		//		SDL_RenderClear(renderer);
-		SDL_RenderCopy(renderer, scrtex, NULL, NULL);
-		SDL_RenderPresent(renderer);
+		update();
 
 		// obs≥uga zdarzeÒ (o ile jakieú zasz≥y) / handling of events (if there were any)
 		while (SDL_PollEvent(&event)) {
@@ -133,6 +179,43 @@ void Game::start() {
 		frames++;
 	};
 	stop();
+}
+
+void Game::render() {
+	char text[128];
+	int czarny = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
+	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
+	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
+	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
+	SDL_FillRect(screen, NULL, czarny);
+
+	DrawSurface(screen, eti,
+		SCREEN_WIDTH / 2 + sin(distance) * SCREEN_HEIGHT / 3,
+		SCREEN_HEIGHT / 2 + cos(distance) * SCREEN_HEIGHT / 3);
+
+	fpsTimer += delta;
+	if (fpsTimer > 0.5) {
+		fps = frames * 2;
+		frames = 0;
+		fpsTimer -= 0.5;
+	};
+
+	// tekst informacyjny / info text
+	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 36, czerwony, niebieski);
+
+	sprintf(text, "Szablon drugiego zadania, czas trwania = %.1lf s  %.0lf klatek / s", worldTime, fps);
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
+
+	sprintf(text, "Esc - wyjscie, \030 - przyspieszenie, \031 - zwolnienie");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
+
+}
+
+void Game::update() {
+	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
+	//		SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, scrtex, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void Game::stop() {

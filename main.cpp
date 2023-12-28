@@ -8,10 +8,11 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
 
-#define SCREEN_WIDTH	640
-#define SCREEN_HEIGHT	480
+#include "Game.h"
 
 
+
+/*
 // narysowanie napisu txt na powierzchni screen, zaczynaj¹c od punktu (x, y)
 // charset to bitmapa 128x128 zawieraj¹ca znaki
 void DrawString(SDL_Surface *screen, int x, int y, const char *text,
@@ -79,6 +80,7 @@ void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k,
 	for(i = y + 1; i < y + k - 1; i++)
 		DrawLine(screen, x + 1, i, l - 2, 1, 0, fillColor);
 	};
+*/
 
 
 // main
@@ -86,6 +88,8 @@ void DrawRectangle(SDL_Surface *screen, int x, int y, int l, int k,
 extern "C"
 #endif
 int main(int argc, char **argv) {
+	Game game;
+	/*
 	int t1, t2, quit, frames, rc;
 	double delta, worldTime, fpsTimer, fps, distance, etiSpeed;
 	SDL_Event event;
@@ -153,13 +157,15 @@ int main(int argc, char **argv) {
 		SDL_Quit();
 		return 1;
 		};
-
+	*/
+	/*
 	char text[128];
 	int czarny = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
 	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
-
+	*/
+	/*
 	t1 = SDL_GetTicks();
 
 	frames = 0;
@@ -209,8 +215,9 @@ int main(int argc, char **argv) {
 //		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, scrtex, NULL, NULL);
 		SDL_RenderPresent(renderer);
-
+		*/
 		// obs³uga zdarzeñ (o ile jakieœ zasz³y) / handling of events (if there were any)
+		/*
 		while(SDL_PollEvent(&event)) {
 			switch(event.type) {
 				case SDL_KEYDOWN:
@@ -237,5 +244,6 @@ int main(int argc, char **argv) {
 	SDL_DestroyWindow(window);
 
 	SDL_Quit();
+	*/
 	return 0;
 	};
