@@ -12,7 +12,9 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
 
+#include "utils.h"
 #include "Player.h"
+#include <iostream>
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
@@ -27,10 +29,11 @@ private:
 	double delta, worldTime, fpsTimer, fps, distance, etiSpeed;
 	SDL_Event event;
 	SDL_Surface* screen, * charset;
-	SDL_Surface* eti;
+	SDL_Surface* player_tex;
 	SDL_Texture* scrtex;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	Player* player;
 	void init_screen();
 	void load_graphics();
 	void load_error(SDL_Surface* surface, char* path);
@@ -38,6 +41,7 @@ private:
 	void render();
 	void update();
 	void stop();
+	void key_press(SDL_Keycode key);
 };
 
 
