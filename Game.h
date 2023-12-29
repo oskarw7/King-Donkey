@@ -19,8 +19,12 @@ extern "C" {
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 608
+#define SCREEN_HEIGHT 654
 #define	GRAVITY 8
+#define MAP_ROWS 17
+#define MAP_COLS 25
+#define TILES_COUNT 114
+#define LADDER_COUNT 24
 
 class Game {
 public:
@@ -28,6 +32,7 @@ public:
 
 private:
 	int t1, t2, quit, frames, rc;
+	int map[MAP_ROWS][MAP_COLS];
 	double delta, worldTime, fpsTimer, fps, distance, etiSpeed;
 	SDL_Event event;
 	SDL_Surface* screen, * charset;
@@ -38,8 +43,8 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	Player* player; 
-	Floor* tiles[SCREEN_WIDTH / FLOOR_SIZE];
-	Ladder* ladders[3];
+	Floor* tiles[TILES_COUNT];
+	Ladder* ladders[LADDER_COUNT];
 
 	void init_screen();
 	void load_graphics();
@@ -50,6 +55,8 @@ private:
 	void stop();
 	void key_press(SDL_Keycode key);
 	void gravity();
+	void load_map();
+	void draw_map();
 };
 
 

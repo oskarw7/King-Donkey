@@ -7,7 +7,6 @@ extern "C" {
 }
 #include "utils.h"
 #include <math.h>
-#include <iostream>
 
 class Object {
 public:
