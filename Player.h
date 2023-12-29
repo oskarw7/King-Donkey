@@ -6,7 +6,7 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL.h"
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
-#include <iostream>
+
 #include "Object.h"
 
 #define PLAYER_SIZE 32
@@ -21,6 +21,7 @@ public:
 
 	}
 	int speed;
+	int isFalling;
 private:
 	int lives;
 };

@@ -14,11 +14,13 @@ extern "C" {
 
 #include "utils.h"
 #include "Player.h"
-#include <iostream>
+#include "Floor.h"
+#include "Ladder.h"
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_HEIGHT 608
+#define	GRAVITY 8
 
 class Game {
 public:
@@ -30,10 +32,15 @@ private:
 	SDL_Event event;
 	SDL_Surface* screen, * charset;
 	SDL_Surface* player_tex;
+	SDL_Surface* floor_tex;
+	SDL_Surface* ladder_tex;
 	SDL_Texture* scrtex;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	Player* player;
+	Player* player; 
+	Floor* tiles[SCREEN_WIDTH / FLOOR_SIZE];
+	Ladder* ladders[3];
+
 	void init_screen();
 	void load_graphics();
 	void load_error(SDL_Surface* surface, char* path);
@@ -42,6 +49,7 @@ private:
 	void update();
 	void stop();
 	void key_press(SDL_Keycode key);
+	void gravity();
 };
 
 
