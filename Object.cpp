@@ -27,6 +27,13 @@ int Object::isCollision(Object* a) {
 	return 0;
 }
 
+int Object::isOn(Object* a) {
+	if (((y + height - a->y >= 0) && (y + height - a->y <=	REFRESH_MARGIN)) && (x < a->x + a->width) && (x + width > a->x)) {
+		return 1;
+	}
+	return 0;
+}
+
 void Object::move(int mx, int my) {
 	x += mx;
 	y += my;

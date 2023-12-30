@@ -21,8 +21,6 @@ extern "C" {
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 700
 #define	GRAVITY 3.5
-#define TILES_COUNT 114
-#define LADDER_COUNT 24
 #define TITLE "King Donkey"
 #define CHARSET_PATH "./cs8x8.bmp"
 #define PLAYER_PATH "./player.bmp"
@@ -54,12 +52,13 @@ private:
 	void load_graphics();
 	void load_error(SDL_Surface* surface, char* path);
 	void start();
-	void render();
+	void render(char* new_game);
 	void update();
 	void stop();
 	void key_press(SDL_Keycode key);
 	void gravity();
 	void draw_map();
+	void Game::manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames, char* new_game);
 };
 
 

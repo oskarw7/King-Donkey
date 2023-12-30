@@ -8,11 +8,14 @@ extern "C" {
 #include "utils.h"
 #include <math.h>
 
+#define REFRESH_MARGIN 4
+
 class Object {
 public:
 
 	Object(int x, int y, int width, int height, SDL_Surface* texture, SDL_Surface* screen);
 	int isCollision(Object* a);
+	int isOn(Object* a);
 	void draw();
 	void move(int mx, int my);
 private:

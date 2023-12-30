@@ -14,6 +14,7 @@ extern "C" {
 #define PLAYER_SIZE 32
 #define PLAYER_SPEED 4
 #define PLAYER_LIVES 4
+#define JUMP_FORCE 19
 
 class Player : public Object {
 public:
@@ -24,6 +25,7 @@ public:
 	int speed;
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
+	int touch_tile(Map* map);
 private:
 	int lives;
 };

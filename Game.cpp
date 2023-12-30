@@ -39,7 +39,6 @@ void Game::init_screen() {
 
 	SDL_SetWindowTitle(window, TITLE);
 
-
 	screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32,
 		0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
@@ -84,37 +83,23 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 }
 
 void Game::start() {
+	int frames = 0;
+
 	double t1 = SDL_GetTicks();
 	double t2 = t1;
-
-	int frames = 0;
 	double fpsTimer = 0;
 	double fps = 0;
+	double delta = 0;
+
+	char* new_game="";
+
 	worldTime = 0;
-	double delta;
 
 	while (!quit) {
-		
-		t2 = SDL_GetTicks();
 
-		// w tym momencie t2-t1 to czas w milisekundach,
-		// jaki uplyna³ od ostatniego narysowania ekranu
-		// delta to ten sam czas w sekundach
-		delta = (t2 - t1) * 0.001;
-		t1 = t2;
+		manage_time(&delta, &t1, &t2, &worldTime, &fpsTimer, &fps, &frames, new_game);
 
-		if (game_started) {
-			worldTime += delta;
-		}
-
-		fpsTimer += delta;
-		if (fpsTimer > 0.5) {
-			fps = frames * 2;
-			frames = 0;
-			fpsTimer -= 0.5;
-		};
-
-		render();
+		render(new_game);
 
 		update();
 
@@ -137,7 +122,31 @@ void Game::start() {
 	stop();
 }
 
-void Game::render() {
+void Game::manage_time(double* delta, double* t1, double *t2, double* worldTime, double* fpsTimer, double* fps, int* frames, char* new_game) {
+	// w tym momencie t2-t1 to czas w milisekundach,
+	// jaki uplyna³ od ostatniego narysowania ekranu
+	// delta to ten sam czas w sekundach
+	*t2 = SDL_GetTicks();
+	*delta = (*t2 - *t1) * 0.001;
+	*t1 = *t2;
+
+	if (game_started) {
+		*worldTime += *delta;
+		new_game = "";
+	}
+	else {
+		new_game = ", N - nowa gra";
+	}
+
+	*fpsTimer += *delta;
+	if (*fpsTimer > 0.5) {
+		*fps = *frames * 2;
+		*frames = 0;
+		*fpsTimer -= 0.5;
+	};
+}
+
+void Game::render(char* new_game) {
 	
 	char text[128];
 	int czarny = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
@@ -151,7 +160,7 @@ void Game::render() {
 	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, czerwony, czarny);
 	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, czerwony, niebieski);
 
-	sprintf(text, "ESC - wyjscie, N - nowa gra");
+	sprintf(text, "ESC - wyjscie%s", new_game);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
 	sprintf(text, "Czas trwania: %.1lf s", worldTime);
@@ -172,7 +181,6 @@ void Game::render() {
 
 
 void Game::update() {
-
 	gravity();
 }
 
@@ -188,29 +196,37 @@ void Game::stop() {
 }
 
 void Game::key_press(SDL_Keycode key) {
+	int mx = 0, my = 0;
 	if (key == SDLK_ESCAPE) {
 		quit = 1;
 	}
 	else if (game_started) {
 		if (key == SDLK_UP) {
 			if (player->on_ladder(map)) {
-				player->move(0, -player->speed);
+				my -= player->speed;
+				//player->move(0, -player->speed);
 			}
 		}
 		else if (key == SDLK_DOWN) {
 			if (player->on_ladder(map)) {
-				player->move(0, player->speed);
+				//player->move(0, player->speed);
+				my += player->speed;
 			}
 		}
 		else if (key == SDLK_LEFT) {
-			player->move(-player->speed, 0);
+			//player->move(-player->speed, 0);
+			mx -= player->speed;
 		}
 		else if (key == SDLK_RIGHT) {
-			player->move(player->speed, 0);
+			//player->move(player->speed, 0);
+			mx += player->speed;
 		}
 		else if (key == SDLK_SPACE) {
-			player->move(0, -15 * GRAVITY);
+			//player->move(0, -15 * GRAVITY);
+			if(player->on_ground(map) || ((player->on_ladder(map) && player->touch_tile(map))))
+				my -= JUMP_FORCE * GRAVITY; //przeniesc do update? rozbicie na parametry ruchu (x, v, a)
 		}
+		player->move(mx, my);
 	}
 	else if (key == SDLK_n) {
 		game_started = 1;

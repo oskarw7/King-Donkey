@@ -5,8 +5,7 @@
 #include "Ladder.h"
 #include "ObjectList.h"
 
-#include<stdio.h>
-#include <iostream>
+#include <stdio.h>
 
 #define MAP_HEIGHT 17
 #define MAP_WIDTH 25
