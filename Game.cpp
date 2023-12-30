@@ -1,10 +1,4 @@
 #include "Game.h"
-#define TITLE "King Donkey"
-#define CHARSET_PATH "./cs8x8.bmp"
-#define PLAYER_PATH "./player.bmp"
-#define FLOOR_PATH "./floor.bmp"
-#define LADDER_PATH	"./ladder.bmp"
-#define FILENAME "./map.txt"
 
 
 Game::Game() {
@@ -14,40 +8,16 @@ Game::Game() {
 
 	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, screen);
 
-	load_map();
+	map = new Map(MAP_FILENAME, screen, floor_tex, ladder_tex);
+
+	quit = 0;
+
+	game_started = 0;
 
 	start();
+
 }
 
-void Game::load_map() {
-	FILE* f;
-	f = fopen(FILENAME, "r");
-
-	if (f == NULL) {
-		exit(1);
-	}
-
-	for (int i = 0; i < MAP_ROWS; i++) {
-		for (int j = 0; j < MAP_COLS; j++) {
-			fscanf(f, "%d ", &map[i][j]);
-		}
-	}
-
-	int k = 0, l = 0;
-	for (int i = 0; i < MAP_ROWS; i++) {
-		for (int j = 0; j < MAP_COLS; j++) {
-			switch (map[i][j]) {
-				case 1:
-					tiles[k] = new Floor(j * FLOOR_SIZE, i * FLOOR_SIZE + 110, floor_tex, screen);
-					k++;
-					break;
-				case 2:
-					ladders[l] = new Ladder(j * LADDER_SIZE, i * LADDER_SIZE + 110, ladder_tex, screen);
-					l++;
-			}
-		}
-	}
-}
 
 void Game::init_screen() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -55,7 +25,7 @@ void Game::init_screen() {
 		exit(1);
 	}
 
-	rc = SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
+	int rc = SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
 		&window, &renderer);
 	if (rc != 0) {
 		SDL_Quit();
@@ -114,15 +84,14 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 }
 
 void Game::start() {
-	t1 = SDL_GetTicks();
+	double t1 = SDL_GetTicks();
+	double t2 = t1;
 
-	frames = 0;
-	fpsTimer = 0;
-	fps = 0;
-	quit = 0;
+	int frames = 0;
+	double fpsTimer = 0;
+	double fps = 0;
 	worldTime = 0;
-	distance = 0;
-	etiSpeed = 1;
+	double delta;
 
 	while (!quit) {
 		
@@ -134,15 +103,20 @@ void Game::start() {
 		delta = (t2 - t1) * 0.001;
 		t1 = t2;
 
-		worldTime += delta;
+		if (game_started) {
+			worldTime += delta;
+		}
 
-		distance += etiSpeed * delta;
+		fpsTimer += delta;
+		if (fpsTimer > 0.5) {
+			fps = frames * 2;
+			frames = 0;
+			fpsTimer -= 0.5;
+		};
 
 		render();
 
 		update();
-
-		gravity(); //TODO gdzie wywolac, bug pod drabina, wbija w ziemie
 
 		// obs³uga zdarzeñ
 		while (SDL_PollEvent(&event)) {
@@ -151,7 +125,6 @@ void Game::start() {
 				key_press(event.key.keysym.sym);
 				break;
 			case SDL_KEYUP:
-				
 				break;
 			case SDL_QUIT:
 				quit = 1;
@@ -174,42 +147,33 @@ void Game::render() {
 
 	//SDL_FillRect(screen, NULL, czarny);
 
-	fpsTimer += delta;
-	if (fpsTimer > 0.5) {
-		fps = frames * 2;
-		frames = 0;
-		fpsTimer -= 0.5;
-	};
-
 	// tekst informacyjny / info text
 	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, czerwony, czarny);
-	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 36, czerwony, niebieski);
+	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, czerwony, niebieski);
 
-	sprintf(text, "Czas trwania: %.1lf s", worldTime);
+	sprintf(text, "ESC - wyjscie, N - nowa gra");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
-	sprintf(text, "Wykonane punkty:");
+	sprintf(text, "Czas trwania: %.1lf s", worldTime);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
 
-	draw_map();
+	sprintf(text, "Wykonane punkty:");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
+
+	map->draw();
 
 	player->draw();
-}
 
-void Game::draw_map() {
-	for (int i = 0; i < TILES_COUNT; i++) {
-		tiles[i]->draw();
-	}
-	for (int i = 0; i < LADDER_COUNT; i++) {
-		ladders[i]->draw();
-	}
-}
-
-void Game::update() {
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
 	//		SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, scrtex, NULL, NULL);
 	SDL_RenderPresent(renderer);
+}
+
+
+void Game::update() {
+
+	gravity();
 }
 
 void Game::stop() {
@@ -227,41 +191,35 @@ void Game::key_press(SDL_Keycode key) {
 	if (key == SDLK_ESCAPE) {
 		quit = 1;
 	}
-	else if (key == SDLK_UP) {
-		for (int i = 0; i < LADDER_COUNT; i++) {
-			if (player->isCollision(ladders[i])) {
+	else if (game_started) {
+		if (key == SDLK_UP) {
+			if (player->on_ladder(map)) {
 				player->move(0, -player->speed);
 			}
 		}
-	}
-	else if (key == SDLK_DOWN) {
-		for (int i = 0; i < LADDER_COUNT; i++) {
-			if (player->isCollision(ladders[i])) {
+		else if (key == SDLK_DOWN) {
+			if (player->on_ladder(map)) {
 				player->move(0, player->speed);
 			}
 		}
-	}
-	else if (key == SDLK_LEFT) {
-		player->move(-player->speed, 0);
-	}
-	else if (key == SDLK_RIGHT) {
-		player->move(player->speed, 0);
+		else if (key == SDLK_LEFT) {
+			player->move(-player->speed, 0);
+		}
+		else if (key == SDLK_RIGHT) {
+			player->move(player->speed, 0);
+		}
+		else if (key == SDLK_SPACE) {
+			player->move(0, -15 * GRAVITY);
+		}
 	}
 	else if (key == SDLK_n) {
-
+		game_started = 1;
 	}
 }
 
 void Game::gravity() {
-	player->isFalling = 1;
-	for (int i = 0; i < TILES_COUNT; i++) {
-		for (int j = 0; j < LADDER_COUNT; j++) {
-			if (player->isCollision(tiles[i]) || player->isCollision(ladders[j])) {
-				player->isFalling = 0;
-			}
-		}
+	if (player->on_ladder(map) || player->on_ground(map)) {
+		return;
 	}
-	if (player->isFalling == 1) {
-		player->move(0, GRAVITY);
-	}
+	player->move(0, GRAVITY);
 }

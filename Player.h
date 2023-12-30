@@ -8,6 +8,8 @@ extern "C" {
 }
 
 #include "Object.h"
+#include "Ladder.h"
+#include "Map.h"
 
 #define PLAYER_SIZE 32
 #define PLAYER_SPEED 4
@@ -18,10 +20,10 @@ public:
 	Player(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, PLAYER_SIZE, PLAYER_SIZE, texture, screen) {
 		this->speed = PLAYER_SPEED;
 		this->lives = PLAYER_LIVES;
-
 	}
 	int speed;
-	int isFalling;
+	int on_ladder(Map* map);
+	int on_ground(Map* map);
 private:
 	int lives;
 };
