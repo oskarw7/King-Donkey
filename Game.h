@@ -29,11 +29,11 @@ extern "C" {
 #define MAP_FILENAME "./map.txt"
 
 struct PressedKeys {
-	int up = 0;
-	int down = 0;
-	int left = 0;
-	int right = 0;
-	int space = 0;
+	int up;
+	int down;
+	int left;
+	int right;
+	int space;
 };
 
 class Game {
@@ -55,7 +55,7 @@ private:
 	SDL_Renderer* renderer;
 	Player* player; 
 	Map* map;
-	struct PressedKeys pk;
+	struct PressedKeys pk = { 0, 0, 0, 0, 0};
 
 	void init_screen();
 	void load_graphics();
