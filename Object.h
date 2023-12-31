@@ -9,6 +9,7 @@ extern "C" {
 #include <math.h>
 
 #define REFRESH_MARGIN 4
+#define	GRAVITY 3.5
 
 class Object {
 public:
@@ -17,8 +18,7 @@ public:
 	int isCollision(Object* a);
 	int isOn(Object* a);
 	void draw();
-	void move(int mx, int my);
-private:
+protected: //ex public (do isOut w barrel)
 	int x;
 	int y;
 	int mid_x;

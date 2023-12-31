@@ -16,17 +16,19 @@ extern "C" {
 #include "Player.h"
 #include "Floor.h"
 #include "Ladder.h"
+#include "Barrel.h"
+#include "BarrelList.h"
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 700
-#define	GRAVITY 3.5
 #define TITLE "King Donkey"
-#define CHARSET_PATH "./cs8x8.bmp"
-#define PLAYER_PATH "./player.bmp"
-#define FLOOR_PATH "./floor.bmp"
-#define LADDER_PATH	"./ladder.bmp"
-#define MAP_FILENAME "./map.txt"
+#define CHARSET_PATH "./Assets/cs8x8.bmp"
+#define PLAYER_PATH "./Assets/player.bmp"
+#define FLOOR_PATH "./Assets/floor.bmp"
+#define LADDER_PATH	"./Assets/ladder.bmp"
+#define BARREL_PATH "./Assets/barrel.bmp"
+#define MAP_FILENAME "./Assets/map.txt"
 
 struct PressedKeys {
 	int up;
@@ -44,18 +46,25 @@ private:
 	int quit;
 	double worldTime;
 	int game_started;
+
 	SDL_Event event;
+
 	SDL_Surface* screen;
 	SDL_Surface* charset;
 	SDL_Surface* player_tex;
 	SDL_Surface* floor_tex;
 	SDL_Surface* ladder_tex;
+	SDL_Surface* barrel_tex;
+
 	SDL_Texture* scrtex;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+
 	Player* player; 
 	Map* map;
-	struct PressedKeys pk = { 0, 0, 0, 0, 0};
+	BarrelList barrels;
+
+	struct PressedKeys pk = {0, 0, 0, 0, 0};
 
 	void init_screen();
 	void load_graphics();
@@ -64,9 +73,10 @@ private:
 	void render();
 	void update();
 	void stop();
-	void gravity();
+	void players_gravity();
 	void draw_map();
-	void Game::manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
+	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
+	void hit_barrel();
 };
 
 

@@ -1,7 +1,5 @@
 #include "Game.h"
 
-
-
 Game::Game() {
 	init_screen();
 	load_graphics();
@@ -10,6 +8,8 @@ Game::Game() {
 	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, screen);
 
 	map = new Map(MAP_FILENAME, screen, floor_tex, ladder_tex);
+
+	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
 
 	quit = 0;
 
@@ -70,6 +70,10 @@ void Game::load_graphics() {
 		load_error(ladder_tex, LADDER_PATH);
 	}
 
+	barrel_tex = SDL_LoadBMP(BARREL_PATH);
+	if (barrel_tex == NULL) {
+		load_error(barrel_tex, BARREL_PATH);
+	}
 }
 
 void Game::load_error(SDL_Surface* surface, char* path) {
@@ -101,6 +105,8 @@ void Game::start() {
 		render();
 
 		if (game_started) {
+			if(fmod(worldTime, BARREL_FREQUENCY) < BARREL_TIME_MARGIN)
+				barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
 			update();
 		}
 
@@ -157,7 +163,6 @@ void Game::start() {
 				break;
 			};
 		};
-
 		frames++;
 	};
 	stop();
@@ -191,17 +196,15 @@ void Game::render() {
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
 
-	//SDL_FillRect(screen, NULL, czarny);
-
-	// tekst informacyjny / info text
+	// tekst informacyjny
 	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, czerwony, czarny);
 	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, czerwony, niebieski);
 
-	char* second_line = "";
+	char* second_bind = "";
 	if (!game_started) {
-		second_line = "N - nowa gra";
+		second_bind = ", N - nowa gra";
 	}
-	sprintf(text, "ESC - wyjscie%s", second_line);
+	sprintf(text, "ESC - wyjscie%s", second_bind);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
 	sprintf(text, "Czas trwania: %.1lf s", worldTime);
@@ -211,6 +214,10 @@ void Game::render() {
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
 
 	map->draw();
+
+	for (int i = 0; i < barrels.get_size(); i++) {
+		barrels.get(i)->draw();
+	}
 
 	player->draw();
 
@@ -222,34 +229,42 @@ void Game::render() {
 
 
 void Game::update() {
-	gravity();
+	players_gravity();
+
+	for (int i = 0; i < barrels.get_size(); i++)
+		barrels.get(i)->barrel_gravity(map);
+
 	int mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
 			my -= player->speed;
-			//player->move(0, -player->speed);
 		}
 	}
 	else if (pk.down) {
 		if (player->on_ladder(map)) {
-			//player->move(0, player->speed);
 			my += player->speed;
 		}
 	}
 	else if (pk.left) {
-		//player->move(-player->speed, 0);
 		mx -= player->speed;
 	}
 	else if (pk.right) {
-		//player->move(player->speed, 0);
 		mx += player->speed;
 	}
 	if (pk.space) {
-		//player->move(0, -15 * GRAVITY);
 		if (player->on_ground(map) || ((player->on_ladder(map) && player->touch_tile(map))))
-			my -= JUMP_FORCE * GRAVITY; //przeniesc do update? rozbicie na parametry ruchu (x, v, a)
+			my -= JUMP_FORCE * GRAVITY; //rozbicie na parametry ruchu (x, v, a)
 	}
 	player->move(mx, my);
+
+	for (int i = 0; i < barrels.get_size(); i++) {
+		barrels.get(i)->update(map);
+		if (barrels.get(i)->isOut()) {
+			//barrels.remove(barrels.get(i));
+		}
+	}
+
+	hit_barrel();
 }
 
 void Game::stop() {
@@ -264,9 +279,17 @@ void Game::stop() {
 }
 
 
-void Game::gravity() {
+void Game::players_gravity() {
 	if (player->on_ladder(map) || player->on_ground(map)) {
 		return;
 	}
 	player->move(0, GRAVITY);
+}
+
+void Game::hit_barrel() {
+	for (int i = 0; i < barrels.get_size(); i++) {
+		if (player->isCollision(barrels.get(i))) {
+			printf("HIT!");
+		}
+	}
 }

@@ -30,3 +30,21 @@ int Player::touch_tile(Map* map) {
 	return 0;
 
 }
+
+void Player::move(int mx, int my) {
+	x += mx;
+	y += my;
+	if (x < 0) {
+		x = 0;
+	}
+	else if (x > screen->w - width) {
+		x = screen->w - width;
+	}
+
+	if (y < 0) {
+		y = 0;
+	}
+	else if (y > screen->h - height) {
+		y = screen->h - height;
+	}
+}

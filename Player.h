@@ -23,6 +23,7 @@ public:
 		this->lives = PLAYER_LIVES;
 	}
 	int speed;
+	void move(int mx, int my);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
 	int touch_tile(Map* map);
