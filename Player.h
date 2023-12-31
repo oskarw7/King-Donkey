@@ -12,9 +12,9 @@ extern "C" {
 #include "Map.h"
 
 #define PLAYER_SIZE 32
-#define PLAYER_SPEED 4
+#define PLAYER_SPEED 2
 #define PLAYER_LIVES 4
-#define JUMP_FORCE 19
+#define JUMP_FORCE 17.5
 
 class Player : public Object {
 public:

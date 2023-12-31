@@ -28,6 +28,14 @@ extern "C" {
 #define LADDER_PATH	"./ladder.bmp"
 #define MAP_FILENAME "./map.txt"
 
+struct PressedKeys {
+	int up = 0;
+	int down = 0;
+	int left = 0;
+	int right = 0;
+	int space = 0;
+};
+
 class Game {
 public:
 	Game();
@@ -47,18 +55,18 @@ private:
 	SDL_Renderer* renderer;
 	Player* player; 
 	Map* map;
+	struct PressedKeys pk;
 
 	void init_screen();
 	void load_graphics();
 	void load_error(SDL_Surface* surface, char* path);
 	void start();
-	void render(char* new_game);
+	void render();
 	void update();
 	void stop();
-	void key_press(SDL_Keycode key);
 	void gravity();
 	void draw_map();
-	void Game::manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames, char* new_game);
+	void Game::manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
 };
 
 
