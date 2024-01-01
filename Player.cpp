@@ -44,7 +44,7 @@ void Player::move(int mx, int my) {
 	if (y < 0) {
 		y = 0;
 	}
-	else if (y > screen->h - height) {
-		y = screen->h - height;
+	else if (y > screen->h - FLOOR_SIZE - height) {
+		y = screen->h - FLOOR_SIZE - height;
 	}
 }

@@ -10,6 +10,7 @@ extern "C" {
 #include "Object.h"
 #include "Ladder.h"
 #include "Map.h"
+#include "Floor.h"
 
 #define PLAYER_SIZE 32
 #define PLAYER_SPEED 2

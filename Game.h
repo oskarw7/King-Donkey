@@ -21,14 +21,17 @@ extern "C" {
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 700
+#define SCREEN_HEIGHT 750
 #define TITLE "King Donkey"
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
 #define PLAYER_PATH "./Assets/player.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
 #define LADDER_PATH	"./Assets/ladder.bmp"
 #define BARREL_PATH "./Assets/barrel.bmp"
-#define MAP_FILENAME "./Assets/map.txt"
+#define PRINCESS_PATH	"./Assets/princess.bmp"
+#define MAP1_FILENAME "./Assets/map1.txt"
+#define MAP2_FILENAME "./Assets/map2.txt"
+#define MAP3_FILENAME "./Assets/map3.txt"
 
 struct PressedKeys {
 	int up;
@@ -55,6 +58,7 @@ private:
 	SDL_Surface* floor_tex;
 	SDL_Surface* ladder_tex;
 	SDL_Surface* barrel_tex;
+	SDL_Surface* princess_tex;
 
 	SDL_Texture* scrtex;
 	SDL_Window* window;
@@ -77,6 +81,7 @@ private:
 	void draw_map();
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
 	void hit_barrel();
+	void change_map();
 };
 
 

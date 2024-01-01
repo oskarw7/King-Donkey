@@ -2,6 +2,7 @@
 
 Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex) {
 	this->screen = screen;
+	strcpy(this->map_path, filename);
 	load_map(filename, floor_tex, ladder_tex);
 }
 
@@ -33,6 +34,7 @@ void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_t
 			}
 		}
 	}
+	fclose(f);
 }
 
 void Map::draw() {

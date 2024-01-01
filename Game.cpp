@@ -7,7 +7,7 @@ Game::Game() {
 
 	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, screen);
 
-	map = new Map(MAP_FILENAME, screen, floor_tex, ladder_tex);
+	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex);
 
 	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
 
@@ -74,6 +74,11 @@ void Game::load_graphics() {
 	if (barrel_tex == NULL) {
 		load_error(barrel_tex, BARREL_PATH);
 	}
+
+	princess_tex = SDL_LoadBMP(PRINCESS_PATH);
+	if (princess_tex == NULL) {
+		load_error(princess_tex, PRINCESS_PATH);
+	};
 }
 
 void Game::load_error(SDL_Surface* surface, char* path) {
@@ -136,6 +141,9 @@ void Game::start() {
 				}
 				else if (key == SDLK_ESCAPE) {
 					quit = 1;
+				}
+				else if (key == SDLK_7) {
+					change_map();
 				}
 				break;
 
@@ -292,4 +300,20 @@ void Game::hit_barrel() {
 			printf("HIT!");
 		}
 	}
+}
+
+void Game::change_map() {
+	if (strcmp(map->map_path, MAP1_FILENAME)==0) {
+		printf("1");
+		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex);
+	}
+	else if (strcmp(map->map_path, MAP2_FILENAME) == 0) {
+		printf("2");
+		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex);
+	}
+	else if (strcmp(map->map_path, MAP3_FILENAME) == 0) {
+		printf("3");
+		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex);
+	}
+	printf("xx");
 }
