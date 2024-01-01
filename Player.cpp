@@ -2,7 +2,7 @@
 
 int Player::on_ladder(Map* map) {
 	for (int i = 0; i < map->ladders.get_size(); i++) {
-		if (isCollision(map->ladders.get(i)) || isOn(map->ladders.get(i))) {
+		if (isCollision(map->ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -13,7 +13,7 @@ int Player::on_ladder(Map* map) {
 
 int Player::on_ground(Map* map) {
 	for (int i = 0; i < map->tiles.get_size(); i++) {
-		if (isOn(map->tiles.get(i))) { // isCollision(map->tiles.get(i)) || 
+		if (isOn(map->tiles.get(i))) { 
 			return 1;
 		}
 	}

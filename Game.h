@@ -3,6 +3,7 @@
 #define GAME_H
 
 #define _USE_MATH_DEFINES
+
 #include<math.h>
 #include<stdio.h>
 #include<string.h>
@@ -22,7 +23,6 @@ extern "C" {
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 750
-#define TITLE "King Donkey"
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
 #define PLAYER_PATH "./Assets/player.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
@@ -32,6 +32,11 @@ extern "C" {
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
+
+#define PRINCESS_X 127
+#define PRINCESS_Y 83
+#define PRINCESS_WIDTH 23
+#define PRINCESS_HEIGHT 32
 
 struct PressedKeys {
 	int up;
@@ -67,6 +72,7 @@ private:
 	Player* player; 
 	Map* map;
 	BarrelList barrels;
+	Object* princess;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
 
@@ -82,6 +88,7 @@ private:
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
 	void hit_barrel();
 	void change_map();
+	void check_princess();
 };
 
 

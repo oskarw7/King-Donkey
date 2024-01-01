@@ -11,6 +11,8 @@ Game::Game() {
 
 	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
 
+	princess = new Object(PRINCESS_X, PRINCESS_Y, PRINCESS_WIDTH, PRINCESS_HEIGHT, princess_tex, screen);
+
 	quit = 0;
 
 	game_started = 0;
@@ -227,6 +229,8 @@ void Game::render() {
 		barrels.get(i)->draw();
 	}
 
+	princess->draw();
+
 	player->draw();
 
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
@@ -236,7 +240,7 @@ void Game::render() {
 }
 
 
-void Game::update() {
+void Game::update() { //mozna zejsc pietro nizej na drabinie prowadzacej na pietro wyzej
 	players_gravity();
 
 	for (int i = 0; i < barrels.get_size(); i++)
@@ -260,7 +264,7 @@ void Game::update() {
 		mx += player->speed;
 	}
 	if (pk.space) {
-		if (player->on_ground(map) || ((player->on_ladder(map) && player->touch_tile(map))))
+		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_ladder(map) && player->touch_tile(map))))
 			my -= JUMP_FORCE * GRAVITY; //rozbicie na parametry ruchu (x, v, a)
 	}
 	player->move(mx, my);
@@ -273,6 +277,8 @@ void Game::update() {
 	}
 
 	hit_barrel();
+
+	check_princess();
 }
 
 void Game::stop() {
@@ -316,4 +322,9 @@ void Game::change_map() {
 		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex);
 	}
 	printf("xx");
+}
+
+void Game::check_princess() {
+	if (player->isCollision(princess))
+		printf("WIN!");
 }

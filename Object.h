@@ -18,11 +18,10 @@ public:
 	int isCollision(Object* a);
 	int isOn(Object* a);
 	void draw();
+
 protected: //ex public (do isOut w barrel)
 	int x;
 	int y;
-	int mid_x;
-	int mid_y;
 	int width;
 	int height;
 	SDL_Surface* texture;
