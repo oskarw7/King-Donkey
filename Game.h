@@ -19,6 +19,7 @@ extern "C" {
 #include "Ladder.h"
 #include "Barrel.h"
 #include "BarrelList.h"
+#include "Princess.h"
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
@@ -33,11 +34,6 @@ extern "C" {
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
-
-#define PRINCESS_X 127
-#define PRINCESS_Y 83
-#define PRINCESS_WIDTH 23
-#define PRINCESS_HEIGHT 32
 
 #define TPS 60
 
@@ -77,7 +73,7 @@ private:
 	Player* player; 
 	Map* map;
 	BarrelList barrels;
-	Object* princess;
+	Princess* princess;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
 

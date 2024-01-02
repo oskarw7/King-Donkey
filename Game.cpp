@@ -7,11 +7,11 @@ Game::Game() {
 
 	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, screen);
 
-	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex);
+	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
 
 	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
 
-	princess = new Object(PRINCESS_X, PRINCESS_Y, PRINCESS_WIDTH, PRINCESS_HEIGHT, princess_tex, screen);
+	princess = new Princess(PRINCESS_X, PRINCESS_Y, princess_tex, screen);
 
 	quit = 0;
 
@@ -293,12 +293,12 @@ void Game::update() {
 
 	hit_barrel();
 
+	if (fmod(worldTime, BARREL_FREQUENCY) < BARREL_TIME_MARGIN)
+		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
+
 	check_trophy();
 
 	check_princess();
-
-	if (fmod(worldTime, BARREL_FREQUENCY) < BARREL_TIME_MARGIN)
-		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
 }
 
 void Game::stop() {
@@ -338,26 +338,29 @@ void Game::hit_barrel() {
 
 void Game::change_map() {
 	if (strcmp(map->map_path, MAP1_FILENAME)==0) {
-		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex);
+		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
 	}
 	else if (strcmp(map->map_path, MAP2_FILENAME) == 0) {
-		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex);
+		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
 	}
 	else if (strcmp(map->map_path, MAP3_FILENAME) == 0) {
-		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex);
+		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
 	}
 }
 
 void Game::check_princess() {
+	if (player->isCollision(princess->ending_area)) {
+		map->set_ending = 1;
+	}
 	if (player->isCollision(princess)) {
 		printf("WIN!");
 		if (first_completed==0 && strcmp(map->map_path, MAP1_FILENAME) == 0) {
-			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex);
+			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
 			player->score += 500;
 			first_completed = 1;
 		}
 		else if (first_completed == 1 && second_completed==0 && strcmp(map->map_path, MAP2_FILENAME) == 0) {
-			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex);
+			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
 			player->score += 1000;
 			second_completed = 1;
 		}

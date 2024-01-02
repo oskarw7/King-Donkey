@@ -12,7 +12,6 @@
 #define BARREL_START_Y 185
 #define BARREL_FREQUENCY 3.0
 #define BARREL_TIME_MARGIN 0.01
-
 #define JUMP_HITBOX_OFFSET 30
 
 class Barrel : public Object{

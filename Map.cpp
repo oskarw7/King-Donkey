@@ -1,8 +1,10 @@
 #include "Map.h"
 
-Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex) {
+Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* charset) {
 	this->screen = screen;
+	this->charset = charset;
 	this->unset_trophy = 0;
+	this->set_ending = 0;
 	strcpy(this->map_path, filename);
 	load_map(filename, floor_tex, ladder_tex, trophy_tex);
 }
@@ -49,4 +51,9 @@ void Map::draw() {
 	}
 	if(unset_trophy!=1)
 		trophy->draw();
+	if (set_ending) {
+		char text[128];
+		sprintf(text, "Gratulacje! Podejdz do ksiezniczki.");
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 70, text, charset);
+	}
 }
