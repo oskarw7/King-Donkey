@@ -240,7 +240,7 @@ void Game::render() {
 }
 
 
-void Game::update() { //mozna zejsc pietro nizej na drabinie prowadzacej na pietro wyzej
+void Game::update() {
 	players_gravity();
 
 	for (int i = 0; i < barrels.get_size(); i++)
@@ -253,7 +253,7 @@ void Game::update() { //mozna zejsc pietro nizej na drabinie prowadzacej na piet
 		}
 	}
 	else if (pk.down) {
-		if (player->on_ladder(map)) {
+		if ((player->on_ladder(map) || player->above_ladder(map)) && !player->on_ground(map)) {
 			my += player->speed;
 		}
 	}

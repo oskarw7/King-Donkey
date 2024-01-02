@@ -31,6 +31,17 @@ int Player::touch_tile(Map* map) {
 
 }
 
+int Player::above_ladder(Map* map) {
+	for (int i = 0; i < map->ladders.get_size(); i++) {
+		if (isOn(map->ladders.get(i))) {
+			return 1;
+		}
+	}
+	return 0;
+
+}
+
+
 void Player::move(int mx, int my) {
 	x += mx;
 	y += my;

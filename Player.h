@@ -28,6 +28,7 @@ public:
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
 	int touch_tile(Map* map);
+	int above_ladder(Map* map);
 private:
 	int lives;
 };
