@@ -18,6 +18,7 @@ public:
 	int isCollision(Object* a);
 	int isOn(Object* a);
 	void draw();
+	void move(int mx, int my);
 
 protected: //ex public (do isOut w barrel)
 	int x;

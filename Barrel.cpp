@@ -15,6 +15,7 @@ void Barrel::barrel_gravity(Map* map) {
 			return;
 		}
 		move(0, GRAVITY);
+		jump_hitbox->move(0, GRAVITY);
 }
 
 void Barrel::update(Map* map) {
@@ -27,6 +28,7 @@ void Barrel::update(Map* map) {
 	}
 
 	move(vector*BARREL_SPEED, 0);
+	jump_hitbox->move(vector * BARREL_SPEED, 0);
 }
 
 int Barrel::isOut() { //mozna do object -> zmienic scope na private
@@ -34,10 +36,4 @@ int Barrel::isOut() { //mozna do object -> zmienic scope na private
 		return 1;
 	}
 	return 0;
-}
-
-void Barrel::move(int mx, int my) {
-	x += mx;
-	y += my;
-	//beczka odbija sie od lewej sciany
 }

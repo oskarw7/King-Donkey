@@ -22,14 +22,17 @@ public:
 	Player(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, PLAYER_SIZE, PLAYER_SIZE, texture, screen) {
 		this->speed = PLAYER_SPEED;
 		this->lives = PLAYER_LIVES;
+		this->score = 0;
 	}
+	int score;
 	int speed;
-	void move(int mx, int my);
+	int lives;
+	void player_move(int mx, int my);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
 	int touch_tile(Map* map);
 	int above_ladder(Map* map);
 private:
-	int lives;
+	
 };
 #endif

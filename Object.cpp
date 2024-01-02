@@ -26,3 +26,8 @@ int Object::isOn(Object* a) {
 	}
 	return 0;
 }
+
+void Object::move(int mx, int my) {
+	x += mx;
+	y += my;
+}

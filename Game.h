@@ -29,6 +29,7 @@ extern "C" {
 #define LADDER_PATH	"./Assets/ladder.bmp"
 #define BARREL_PATH "./Assets/barrel.bmp"
 #define PRINCESS_PATH	"./Assets/princess.bmp"
+#define TROPHY_PATH "./Assets/trophy.bmp"
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
@@ -37,6 +38,8 @@ extern "C" {
 #define PRINCESS_Y 83
 #define PRINCESS_WIDTH 23
 #define PRINCESS_HEIGHT 32
+
+#define TPS 60
 
 struct PressedKeys {
 	int up;
@@ -54,6 +57,7 @@ private:
 	int quit;
 	double worldTime;
 	int game_started;
+	int first_completed, second_completed, third_completed;
 
 	SDL_Event event;
 
@@ -64,6 +68,7 @@ private:
 	SDL_Surface* ladder_tex;
 	SDL_Surface* barrel_tex;
 	SDL_Surface* princess_tex;
+	SDL_Surface* trophy_tex;
 
 	SDL_Texture* scrtex;
 	SDL_Window* window;
@@ -89,6 +94,7 @@ private:
 	void hit_barrel();
 	void change_map();
 	void check_princess();
+	void check_trophy();
 };
 
 

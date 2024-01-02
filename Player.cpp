@@ -41,8 +41,7 @@ int Player::above_ladder(Map* map) {
 
 }
 
-
-void Player::move(int mx, int my) {
+void Player::player_move(int mx, int my) {
 	x += mx;
 	y += my;
 	if (x < 0) {
