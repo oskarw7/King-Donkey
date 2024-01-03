@@ -10,15 +10,15 @@ int Barrel::on_ground(Map* map) {
 
 }
 
-void Barrel::barrel_gravity(Map* map) {
+void Barrel::barrel_gravity(Map* map, double delta) {
 	if (on_ground(map)) {
 			return;
 	}
-	move(0, GRAVITY);
-	jump_hitbox->move(0, GRAVITY);
+	move(0, GRAVITY*delta);
+	jump_hitbox->move(0, GRAVITY*delta);
 }
 
-void Barrel::update(Map* map) {
+void Barrel::update(Map* map, double delta) {
 	if (!on_ground(map) && !change_direction && x>=0) {
 		vector *= -1;
 		change_direction = 1;
@@ -28,8 +28,8 @@ void Barrel::update(Map* map) {
 	}
 
 	if (on_ground(map)) {
-		move(vector * BARREL_SPEED, 0);
-		jump_hitbox->move(vector * BARREL_SPEED, 0);
+		move(vector * BARREL_SPEED*delta, 0);
+		jump_hitbox->move(vector * BARREL_SPEED*delta, 0);
 	}
 }
 

@@ -46,6 +46,15 @@ int Player::above_ladder(Map* map) {
 
 }
 
+int Player::on_upper_ladder(Map* map) {
+	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
+		if (isCollision(map->upper_ladders.get(i))) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void Player::player_move(int mx, int my) {
 	x += mx;
 	y += my;

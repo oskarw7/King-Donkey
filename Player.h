@@ -12,7 +12,7 @@ extern "C" {
 #include "Map.h"
 #include "Floor.h"
 
-#define PLAYER_SIZE 32
+#define PLAYER_SIZE 30
 #define PLAYER_SPEED 3
 #define PLAYER_LIVES 4
 #define JUMP_FORCE 20
@@ -27,11 +27,13 @@ public:
 	int score;
 	int speed;
 	int lives;
+
 	void player_move(int mx, int my);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
 	int touch_tile(Map* map);
 	int above_ladder(Map* map);
+	int on_upper_ladder(Map* map);
 private:
 	
 };

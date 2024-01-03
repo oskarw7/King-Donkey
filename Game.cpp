@@ -20,6 +20,7 @@ Game::Game() {
 	third_completed = 0;
 
 	game_started = 0;
+	game_paused = 0;
 
 	start();
 
@@ -159,6 +160,10 @@ void Game::start() {
 				else if (key == SDLK_7) {
 					change_map();
 				}
+				else if (key == SDLK_c && game_paused) {
+					game_paused = 0;
+					game_started = 1;
+				}
 				break;
 
 			case SDL_KEYUP:
@@ -224,18 +229,19 @@ void Game::render() {
 
 	char* second_bind = "";
 	if (!game_started) {
-		second_bind = ", N - nowa gra";
+		second_bind = ", N - new game";
 	}
-	sprintf(text, "ESC - wyjscie%s", second_bind);
+
+	sprintf(text, "ESC - quit%s", second_bind);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
-	sprintf(text, "Czas trwania: %.1lf s", worldTime);
+	sprintf(text, "Gametime: %.1lf s", worldTime);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
 
-	sprintf(text, "Wykonane punkty:");
+	sprintf(text, "Implemented points:");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
 
-	sprintf(text, "Wynik: %d", player->score);
+	sprintf(text, "Score: %d", player->score);
 	DrawString(screen, screen->w - strlen(text) * 8 - 10, 60, text, charset);
 
 	map->draw();
@@ -249,6 +255,17 @@ void Game::render() {
 
 	player->draw();
 
+	if (game_paused) {
+		SDL_FillRect(screen, NULL, czerwony);
+		DrawRectangle(screen, SCREEN_WIDTH/8, SCREEN_HEIGHT/3, 6*SCREEN_WIDTH/8, SCREEN_HEIGHT/3, czerwony, czarny);
+		sprintf(text, "You losed life. Do you want to continue?");
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT/2 - 20, text, charset);
+		sprintf(text, "C - CONTINUE");
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2, text, charset);
+		sprintf(text, "ESC - QUIT");
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 20, text, charset);
+	}
+
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
 	//		SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, scrtex, NULL, NULL);
@@ -260,7 +277,7 @@ void Game::update(double delta) {
 	players_gravity(delta);
 
 	for (int i = 0; i < barrels.get_size(); i++)
-		barrels.get(i)->barrel_gravity(map);
+		barrels.get(i)->barrel_gravity(map, delta);
 
 	int mx = 0, my = 0;
 	if (pk.up) {
@@ -274,19 +291,21 @@ void Game::update(double delta) {
 		}
 	}
 	else if (pk.left) {
-		mx -= player->speed*delta;
+		if(!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map))
+			mx -= player->speed*delta;
 	}
 	else if (pk.right) {
-		mx += player->speed*delta;
+		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map))
+			mx += player->speed*delta;
 	}
 	if (pk.space) {
-		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_ladder(map) && player->touch_tile(map))))
+		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map))))
 			my -= JUMP_FORCE * GRAVITY*delta; //rozbicie na parametry ruchu (x, v, a)
 	}
 	player->player_move(mx, my);
 
 	for (int i = 0; i < barrels.get_size(); i++) {
-		barrels.get(i)->update(map);
+		barrels.get(i)->update(map, delta);
 		if (barrels.get(i)->isOut()) {
 			//barrels.remove(barrels.get(i));
 		}
@@ -327,6 +346,9 @@ void Game::hit_barrel() {
 			printf("HIT!");
 			player->lives--;
 			barrel->player_hit = 1;
+			game_started = 0;
+			game_paused = 1;
+			player->player_move(SCREEN_WIDTH - PLAYER_SIZE, SCREEN_HEIGHT - 2 * PLAYER_SIZE);
 		}
 		else if (player->isCollision(barrel->jump_hitbox) && barrel->player_hit == 0) {
 			player->score+=100;

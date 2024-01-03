@@ -56,7 +56,7 @@ public:
 private:
 	int quit;
 	double worldTime;
-	int game_started;
+	int game_started, game_paused;
 	int first_completed, second_completed, third_completed;
 
 	SDL_Event event;

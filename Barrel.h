@@ -25,8 +25,8 @@ public:
 	};
 
 	int on_ground(Map* map);
-	void update(Map* map);
-	void barrel_gravity(Map* map);
+	void update(Map* map, double delta);
+	void barrel_gravity(Map* map, double delta);
 	int isOut();
 
 	int speed;
