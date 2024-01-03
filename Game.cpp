@@ -90,6 +90,11 @@ void Game::load_graphics() {
 	if (trophy_tex == NULL) {
 		load_error(trophy_tex, TROPHY_PATH);
 	}
+
+	heart_tex = SDL_LoadBMP(HEART_PATH);
+	if (heart_tex == NULL) {
+		load_error(heart_tex, HEART_PATH);
+	}
 }
 
 void Game::load_error(SDL_Surface* surface, char* path) {
@@ -106,11 +111,11 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 void Game::start() {
 	int frames = 0;
 
-	double t1 = 0;
-	double t2 = SDL_GetTicks();
+	double t1 = SDL_GetTicks();
+	double t2;
 	double fpsTimer = 0;
 	double fps = 0;
-	double delta = (t2 - t1) * 0.001;
+	double delta = 0;
 
 	worldTime = 0;
 
@@ -120,13 +125,8 @@ void Game::start() {
 
 		render();
 
-		if (game_started && delta >= 1 / TPS) {
-			update();
-			t2 = SDL_GetTicks();
-			delta = (t2 - t1) * 0.001;
-			t1 = t2;
-
-			worldTime += delta;
+		if (game_started) {
+			update(delta*100);
 		}
 
 		// obs³uga zdarzeñ
@@ -239,6 +239,7 @@ void Game::render() {
 	DrawString(screen, screen->w - strlen(text) * 8 - 10, 60, text, charset);
 
 	map->draw();
+	draw_lives();
 
 	for (int i = 0; i < barrels.get_size(); i++) {
 		barrels.get(i)->draw();
@@ -255,8 +256,8 @@ void Game::render() {
 }
 
 
-void Game::update() {
-	players_gravity();
+void Game::update(double delta) {
+	players_gravity(delta);
 
 	for (int i = 0; i < barrels.get_size(); i++)
 		barrels.get(i)->barrel_gravity(map);
@@ -264,23 +265,23 @@ void Game::update() {
 	int mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
-			my -= player->speed;
+			my -= player->speed*delta;
 		}
 	}
 	else if (pk.down) {
-		if ((player->on_ladder(map) || player->above_ladder(map)) && !player->on_ground(map)) {
-			my += player->speed;
+		if ((player->on_ladder(map) && !player->on_ground(map)) || player->above_ladder(map)) {
+			my += player->speed*delta;
 		}
 	}
 	else if (pk.left) {
-		mx -= player->speed;
+		mx -= player->speed*delta;
 	}
 	else if (pk.right) {
-		mx += player->speed;
+		mx += player->speed*delta;
 	}
 	if (pk.space) {
 		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_ladder(map) && player->touch_tile(map))))
-			my -= JUMP_FORCE * GRAVITY; //rozbicie na parametry ruchu (x, v, a)
+			my -= JUMP_FORCE * GRAVITY*delta; //rozbicie na parametry ruchu (x, v, a)
 	}
 	player->player_move(mx, my);
 
@@ -312,12 +313,11 @@ void Game::stop() {
 	exit(0);
 }
 
-
-void Game::players_gravity() {
+void Game::players_gravity(double delta) {
 	if (player->on_ladder(map) || player->on_ground(map)) {
 		return;
 	}
-	player->player_move(0, GRAVITY);
+	player->player_move(0, GRAVITY*delta);
 }
 
 void Game::hit_barrel() {
@@ -378,5 +378,11 @@ void Game::check_trophy() {
 		delete[] map->trophy;
 		player->score += 300;
 		map->unset_trophy = 1;
+	}
+}
+
+void Game::draw_lives() {
+	for (int i = 0; i < player->lives; i++) {
+		DrawSurface(screen, heart_tex, i * (HEART_WIDTH+5) + HEART_START_X, HEART_START_Y);
 	}
 }

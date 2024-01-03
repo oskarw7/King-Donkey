@@ -8,7 +8,7 @@ extern "C" {
 #include "utils.h"
 #include <math.h>
 
-#define REFRESH_MARGIN 4
+
 #define	GRAVITY 3.5
 
 class Object {
@@ -27,6 +27,8 @@ protected: //ex public (do isOut w barrel)
 	int height;
 	SDL_Surface* texture;
 	SDL_Surface* screen;
+private:
+	double set_refresh_margin();
 };
 
 

@@ -6,6 +6,11 @@ int Player::on_ladder(Map* map) {
 			return 1;
 		}
 	}
+	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
+		if (isCollision(map->upper_ladders.get(i))) {
+			return 1;
+		}
+	}
 	return 0;
 	
 }
@@ -32,8 +37,8 @@ int Player::touch_tile(Map* map) {
 }
 
 int Player::above_ladder(Map* map) {
-	for (int i = 0; i < map->ladders.get_size(); i++) {
-		if (isOn(map->ladders.get(i))) {
+	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
+		if (isOn(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}

@@ -13,9 +13,9 @@ extern "C" {
 #include "Floor.h"
 
 #define PLAYER_SIZE 32
-#define PLAYER_SPEED 2
+#define PLAYER_SPEED 3
 #define PLAYER_LIVES 4
-#define JUMP_FORCE 17.5
+#define JUMP_FORCE 20
 
 class Player : public Object {
 public:

@@ -21,10 +21,18 @@ int Object::isCollision(Object* a) {
 }
 
 int Object::isOn(Object* a) {
-	if (((y + height - a->y >= 0) && (y + height - a->y <=	REFRESH_MARGIN)) && (x < a->x + a->width) && (x + width > a->x)) {
+	if (((y + height - a->y >= 0) && (y + height - a->y <=	set_refresh_margin())) && (x < a->x + a->width) && (x + width > a->x)) {
 		return 1;
 	}
 	return 0;
+}
+
+double Object::set_refresh_margin() {
+	double fraction;
+	if (modf(GRAVITY, &fraction) == 0)
+		return GRAVITY + 1;
+	else
+		return ceil(GRAVITY);
 }
 
 void Object::move(int mx, int my) {

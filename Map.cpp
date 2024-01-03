@@ -32,10 +32,14 @@ void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_t
 				tiles.add(new Floor(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), floor_tex, screen));
 				break;
 			case 2:
-				ladders.add(new Ladder(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), ladder_tex, screen));
+				ladders.add(new Ladder(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - MAP_HEIGHT * LADDER_SIZE), ladder_tex, screen));
 				break;
 			case 3:
-				trophy = new Object(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), 32, 32, trophy_tex, screen);
+				upper_ladders.add(new Floor(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), ladder_tex, screen));
+				break;
+			case 4:
+				trophy = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), TROPHY_WIDTH, TROPHY_HEIGHT, trophy_tex, screen);
+				break;
 			}
 		}
 	}
@@ -48,6 +52,9 @@ void Map::draw() {
 	}
 	for (int i = 0; i < ladders.get_size(); i++) {
 		ladders.get(i)->draw();
+	}
+	for (int i = 0; i < upper_ladders.get_size(); i++) {
+		upper_ladders.get(i)->draw();
 	}
 	if(unset_trophy!=1)
 		trophy->draw();

@@ -13,6 +13,8 @@
 #define MAP_HEIGHT 20
 #define MAP_WIDTH 25
 #define MAP_PATH_LENGTH 17
+#define TROPHY_WIDTH 18
+#define TROPHY_HEIGHT 20
 
 class Map {
 public:
@@ -21,6 +23,7 @@ public:
 	char map_path[MAP_PATH_LENGTH];
 	int unset_trophy;
 	int set_ending;
+	ObjectList upper_ladders;
 	ObjectList ladders;
 	ObjectList tiles;
 	Object* trophy;

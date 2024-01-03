@@ -24,6 +24,11 @@ extern "C" {
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 750
+
+#define HEART_WIDTH 25
+#define HEART_START_X 20
+#define HEART_START_Y 70
+
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
 #define PLAYER_PATH "./Assets/player.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
@@ -31,11 +36,10 @@ extern "C" {
 #define BARREL_PATH "./Assets/barrel.bmp"
 #define PRINCESS_PATH	"./Assets/princess.bmp"
 #define TROPHY_PATH "./Assets/trophy.bmp"
+#define HEART_PATH "./Assets/heart.bmp"
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
-
-#define TPS 60
 
 struct PressedKeys {
 	int up;
@@ -65,6 +69,7 @@ private:
 	SDL_Surface* barrel_tex;
 	SDL_Surface* princess_tex;
 	SDL_Surface* trophy_tex;
+	SDL_Surface* heart_tex;
 
 	SDL_Texture* scrtex;
 	SDL_Window* window;
@@ -82,10 +87,11 @@ private:
 	void load_error(SDL_Surface* surface, char* path);
 	void start();
 	void render();
-	void update();
+	void update(double delta);
 	void stop();
-	void players_gravity();
+	void players_gravity(double delta);
 	void draw_map();
+	void draw_lives();
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
 	void hit_barrel();
 	void change_map();
