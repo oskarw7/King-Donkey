@@ -5,14 +5,14 @@ Object::Object(int x, int y, int width, int height, SDL_Surface* texture, int fr
 	this->width = width;
 	this->height = height;
 	this->frame_width = frame_width;
-	if(texture!=NULL && width > frame_width)
+	if(texture!=NULL)
 		this->animation = new Animation(texture, frame_width);
 	this->texture = texture;
 	this->screen = screen;
 }
 
 void Object::draw() {
-	if(width==frame_width)
+	if(texture->w == frame_width)
 		DrawSurface(screen, texture, x+width/2, y+width/2);
 	else
 		animation->draw_frame(screen, x, y);

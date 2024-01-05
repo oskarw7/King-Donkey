@@ -19,10 +19,12 @@
 #define PRINCESS_HEIGHT 32
 #define ENDING_AREA_WIDTH 32*3
 #define ENDING_AREA_HEIGHT PRINCESS_HEIGHT/20
+#define STANDING_BARREL_WIDTH 19
+#define STANDING_BARREL_HEIGHT 29
 
 class Map {
 public:
-	Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* charset);
+	Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex, SDL_Surface* charset);
 
 	char map_path[MAP_PATH_LENGTH];
 	int unset_trophy;
@@ -33,13 +35,14 @@ public:
 	Object* trophy;
 	Object* princess;
 	Object* ending_area;
+	ObjectList standing_barrels;
 
 	void draw();
 	
 private:
 	SDL_Surface* screen;
 	SDL_Surface* charset;
-	void load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex);
+	void load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex);
 
 };
 

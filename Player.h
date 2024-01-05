@@ -12,14 +12,15 @@ extern "C" {
 #include "Map.h"
 #include "Floor.h"
 
-#define PLAYER_SIZE 30
+#define PLAYER_WIDTH 28
+#define PLAYER_HEIGHT 30
 #define PLAYER_SPEED 3
 #define PLAYER_LIVES 4
 #define JUMP_FORCE 20
 
 class Player : public Object {
 public:
-	Player(int x, int y, SDL_Surface* texture, int frame_width, SDL_Surface* screen) : Object(x, y, PLAYER_SIZE, PLAYER_SIZE, texture, frame_width, screen) {
+	Player(int x, int y, SDL_Surface* texture, int frame_width, SDL_Surface* screen) : Object(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, texture, frame_width, screen) {
 		this->speed = PLAYER_SPEED;
 		this->lives = PLAYER_LIVES;
 		this->score = 0;

@@ -5,11 +5,13 @@ Game::Game() {
 	load_graphics();
 	SDL_ShowCursor(SDL_DISABLE);
 
-	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, 28, screen);
+	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT, player_tex, PLAYER_WIDTH, screen);
 
-	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
+	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 
-	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_SIZE, screen));
+	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_WIDTH, screen));
+
+	donkey_kong = new Object(KONG_START_X, KONG_START_Y, KONG_WIDTH, KONG_HEIGHT, donkey_kong_tex, KONG_WIDTH, screen);
 
 	quit = 0;
 
@@ -80,6 +82,11 @@ void Game::load_graphics() {
 		load_error(barrel_tex, BARREL_PATH);
 	}
 
+	standing_barrel_tex = SDL_LoadBMP(STANDING_BARREL_PATH);
+	if (standing_barrel_tex == NULL) {
+		load_error(standing_barrel_tex, STANDING_BARREL_PATH);
+	}
+
 	princess_tex = SDL_LoadBMP(PRINCESS_PATH);
 	if (princess_tex == NULL) {
 		load_error(princess_tex, PRINCESS_PATH);
@@ -93,6 +100,11 @@ void Game::load_graphics() {
 	heart_tex = SDL_LoadBMP(HEART_PATH);
 	if (heart_tex == NULL) {
 		load_error(heart_tex, HEART_PATH);
+	}
+
+	donkey_kong_tex = SDL_LoadBMP(DONKEY_KONG_PATH);
+	if (donkey_kong_tex == NULL) {
+		load_error(donkey_kong_tex, DONKEY_KONG_PATH);
 	}
 }
 
@@ -249,7 +261,7 @@ void Game::render() {
 		barrels.get(i)->draw();
 	}
 
-	//princess->draw();
+	donkey_kong->draw();
 
 	player->draw();
 
@@ -280,25 +292,25 @@ void Game::update(double delta) {
 	int mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
-			my -= player->speed*delta;
+			my -= player->speed * delta;
 		}
 	}
 	else if (pk.down) {
 		if ((player->on_ladder(map) && !player->on_ground(map)) || player->above_ladder(map)) {
-			my += player->speed*delta;
+			my += player->speed * delta;
 		}
 	}
 	else if (pk.left) {
 		if(!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map))
-			mx -= player->speed*delta;
+			mx -= player->speed * delta;
 	}
 	else if (pk.right) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map))
-			mx += player->speed*delta;
+			mx += player->speed * delta;
 	}
 	if (pk.space) {
 		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map))))
-			my -= JUMP_FORCE * GRAVITY*delta; //rozbicie na parametry ruchu (x, v, a)
+			my -= JUMP_FORCE * GRAVITY * delta; //rozbicie na parametry ruchu (x, v, a)
 	}
 	player->player_move(mx, my);
 
@@ -312,7 +324,7 @@ void Game::update(double delta) {
 	hit_barrel();
 
 	if (fmod(worldTime, BARREL_FREQUENCY) < BARREL_TIME_MARGIN)
-		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_SIZE, screen));
+		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_WIDTH, screen));
 
 	check_trophy();
 
@@ -346,7 +358,7 @@ void Game::hit_barrel() {
 			barrel->player_hit = 1;
 			game_started = 0;
 			game_paused = 1;
-			player->player_move(SCREEN_WIDTH - PLAYER_SIZE, SCREEN_HEIGHT - 2 * PLAYER_SIZE);
+			player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 		}
 		else if (player->isCollision(barrel->jump_hitbox) && barrel->player_hit == 0) {
 			player->score+=100;
@@ -358,13 +370,13 @@ void Game::hit_barrel() {
 
 void Game::change_map() {
 	if (strcmp(map->map_path, MAP1_FILENAME)==0) {
-		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
+		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	}
 	else if (strcmp(map->map_path, MAP2_FILENAME) == 0) {
-		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
+		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	}
 	else if (strcmp(map->map_path, MAP3_FILENAME) == 0) {
-		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
+		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	}
 }
 
@@ -375,12 +387,12 @@ void Game::check_princess() {
 	if (player->isCollision(map->princess)) {
 		printf("WIN!");
 		if (first_completed==0 && strcmp(map->map_path, MAP1_FILENAME) == 0) {
-			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
+			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 			player->score += 500;
 			first_completed = 1;
 		}
 		else if (first_completed == 1 && second_completed==0 && strcmp(map->map_path, MAP2_FILENAME) == 0) {
-			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
+			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 			player->score += 1000;
 			second_completed = 1;
 		}
@@ -389,7 +401,7 @@ void Game::check_princess() {
 			third_completed = 1;
 			stop();
 		}
-		player->player_move(SCREEN_WIDTH - PLAYER_SIZE, SCREEN_HEIGHT - 2 * PLAYER_SIZE);
+		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT	);
 	}
 }
 

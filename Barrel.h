@@ -6,9 +6,10 @@
 #include "Object.h"
 #include "Map.h"
 
-#define BARREL_SIZE 24
+#define BARREL_WIDTH 22
+#define BARREL_HEIGHT 18
 #define BARREL_SPEED 1.5
-#define BARREL_START_X 60
+#define BARREL_START_X 83
 #define BARREL_START_Y 185
 #define BARREL_FREQUENCY 3.0
 #define BARREL_TIME_MARGIN 0.01
@@ -16,11 +17,11 @@
 
 class Barrel : public Object{
 public:
-	Barrel(int x, int y, SDL_Surface* texture, int frame_width, SDL_Surface* screen) : Object(x, y, BARREL_SIZE, BARREL_SIZE, texture, BARREL_SIZE, screen) {
+	Barrel(int x, int y, SDL_Surface* texture, int frame_width, SDL_Surface* screen) : Object(x, y, BARREL_WIDTH, BARREL_HEIGHT, texture, BARREL_WIDTH, screen) {
 		this->speed = BARREL_SPEED;
 		this->change_direction = 0;
 		this->vector = 1;
-		jump_hitbox = new Object(x, y - JUMP_HITBOX_OFFSET, BARREL_SIZE, BARREL_SIZE + JUMP_HITBOX_OFFSET, NULL, 0, NULL);
+		jump_hitbox = new Object(x, y - JUMP_HITBOX_OFFSET, BARREL_WIDTH, BARREL_HEIGHT + JUMP_HITBOX_OFFSET, NULL, 0, NULL);
 		this->player_hit = 0;
 	};
 

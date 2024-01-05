@@ -27,15 +27,21 @@ extern "C" {
 #define HEART_WIDTH 25
 #define HEART_START_X 20
 #define HEART_START_Y 70
+#define KONG_START_X 17
+#define KONG_START_Y 147
+#define KONG_WIDTH 81
+#define KONG_HEIGHT 59
 
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
 #define PLAYER_PATH "./Assets/player_sheet.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
 #define LADDER_PATH	"./Assets/ladder.bmp"
-#define BARREL_PATH "./Assets/barrel.bmp"
+#define BARREL_PATH "./Assets/barrel_sheet.bmp"
+#define STANDING_BARREL_PATH "./Assets/standing_barrel.bmp"
 #define PRINCESS_PATH	"./Assets/princess.bmp"
 #define TROPHY_PATH "./Assets/trophy.bmp"
 #define HEART_PATH "./Assets/heart.bmp"
+#define DONKEY_KONG_PATH "./Assets/donkey_kong_sheet.bmp"
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
@@ -66,9 +72,11 @@ private:
 	SDL_Surface* floor_tex;
 	SDL_Surface* ladder_tex;
 	SDL_Surface* barrel_tex;
+	SDL_Surface* standing_barrel_tex;
 	SDL_Surface* princess_tex;
 	SDL_Surface* trophy_tex;
 	SDL_Surface* heart_tex;
+	SDL_Surface* donkey_kong_tex;
 
 	SDL_Texture* scrtex;
 	SDL_Window* window;
@@ -77,6 +85,7 @@ private:
 	Player* player; 
 	Map* map;
 	BarrelList barrels;
+	Object* donkey_kong;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
 
