@@ -5,13 +5,11 @@ Game::Game() {
 	load_graphics();
 	SDL_ShowCursor(SDL_DISABLE);
 
-	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, screen);
+	player = new Player(SCREEN_WIDTH-PLAYER_SIZE, SCREEN_HEIGHT-2*PLAYER_SIZE, player_tex, 28, screen);
 
-	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
+	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
 
-	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
-
-	princess = new Princess(PRINCESS_X, PRINCESS_Y, princess_tex, screen);
+	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_SIZE, screen));
 
 	quit = 0;
 
@@ -251,7 +249,7 @@ void Game::render() {
 		barrels.get(i)->draw();
 	}
 
-	princess->draw();
+	//princess->draw();
 
 	player->draw();
 
@@ -314,7 +312,7 @@ void Game::update(double delta) {
 	hit_barrel();
 
 	if (fmod(worldTime, BARREL_FREQUENCY) < BARREL_TIME_MARGIN)
-		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, screen));
+		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_SIZE, screen));
 
 	check_trophy();
 
@@ -360,29 +358,29 @@ void Game::hit_barrel() {
 
 void Game::change_map() {
 	if (strcmp(map->map_path, MAP1_FILENAME)==0) {
-		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
+		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
 	}
 	else if (strcmp(map->map_path, MAP2_FILENAME) == 0) {
-		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
+		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
 	}
 	else if (strcmp(map->map_path, MAP3_FILENAME) == 0) {
-		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
+		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
 	}
 }
 
 void Game::check_princess() {
-	if (player->isCollision(princess->ending_area)) {
+	if (player->isCollision(map->ending_area)) {
 		map->set_ending = 1;
 	}
-	if (player->isCollision(princess)) {
+	if (player->isCollision(map->princess)) {
 		printf("WIN!");
 		if (first_completed==0 && strcmp(map->map_path, MAP1_FILENAME) == 0) {
-			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
+			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
 			player->score += 500;
 			first_completed = 1;
 		}
 		else if (first_completed == 1 && second_completed==0 && strcmp(map->map_path, MAP2_FILENAME) == 0) {
-			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, charset);
+			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, charset);
 			player->score += 1000;
 			second_completed = 1;
 		}

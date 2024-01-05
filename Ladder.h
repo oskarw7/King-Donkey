@@ -12,7 +12,7 @@ extern "C" {
 
 class Ladder : public Object {
 public:
-	Ladder(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, LADDER_SIZE, LADDER_SIZE, texture, screen) {};
+	Ladder(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, LADDER_SIZE, LADDER_SIZE, texture, texture->w, screen) {};
 };
 
 #endif

@@ -19,7 +19,7 @@ extern "C" {
 
 class Player : public Object {
 public:
-	Player(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, PLAYER_SIZE, PLAYER_SIZE, texture, screen) {
+	Player(int x, int y, SDL_Surface* texture, int frame_width, SDL_Surface* screen) : Object(x, y, PLAYER_SIZE, PLAYER_SIZE, texture, frame_width, screen) {
 		this->speed = PLAYER_SPEED;
 		this->lives = PLAYER_LIVES;
 		this->score = 0;

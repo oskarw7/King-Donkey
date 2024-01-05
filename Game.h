@@ -19,7 +19,6 @@ extern "C" {
 #include "Ladder.h"
 #include "Barrel.h"
 #include "BarrelList.h"
-#include "Princess.h"
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
@@ -30,7 +29,7 @@ extern "C" {
 #define HEART_START_Y 70
 
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
-#define PLAYER_PATH "./Assets/player.bmp"
+#define PLAYER_PATH "./Assets/player_sheet.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
 #define LADDER_PATH	"./Assets/ladder.bmp"
 #define BARREL_PATH "./Assets/barrel.bmp"
@@ -78,7 +77,6 @@ private:
 	Player* player; 
 	Map* map;
 	BarrelList barrels;
-	Princess* princess;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
 

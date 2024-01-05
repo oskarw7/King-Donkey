@@ -12,7 +12,7 @@ extern "C" {
 
 class Floor : public Object {
 public:
-	Floor(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, FLOOR_SIZE, FLOOR_SIZE, texture, screen) {};
+	Floor(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, FLOOR_SIZE, FLOOR_SIZE, texture, texture->w, screen) {};
 };
 
 #endif

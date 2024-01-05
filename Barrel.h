@@ -16,11 +16,11 @@
 
 class Barrel : public Object{
 public:
-	Barrel(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, BARREL_SIZE, BARREL_SIZE, texture, screen) {
+	Barrel(int x, int y, SDL_Surface* texture, int frame_width, SDL_Surface* screen) : Object(x, y, BARREL_SIZE, BARREL_SIZE, texture, BARREL_SIZE, screen) {
 		this->speed = BARREL_SPEED;
 		this->change_direction = 0;
 		this->vector = 1;
-		jump_hitbox = new Object(x, y - JUMP_HITBOX_OFFSET, BARREL_SIZE, BARREL_SIZE + JUMP_HITBOX_OFFSET, NULL, NULL);
+		jump_hitbox = new Object(x, y - JUMP_HITBOX_OFFSET, BARREL_SIZE, BARREL_SIZE + JUMP_HITBOX_OFFSET, NULL, 0, NULL);
 		this->player_hit = 0;
 	};
 

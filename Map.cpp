@@ -1,15 +1,15 @@
 #include "Map.h"
 
-Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* charset) {
+Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* charset) {
 	this->screen = screen;
 	this->charset = charset;
 	this->unset_trophy = 0;
 	this->set_ending = 0;
 	strcpy(this->map_path, filename);
-	load_map(filename, floor_tex, ladder_tex, trophy_tex);
+	load_map(filename, floor_tex, ladder_tex, trophy_tex, princess_tex);
 }
 
-void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex) {
+void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex) {
 	FILE* f;
 	f = fopen(filename, "r");
 
@@ -38,7 +38,11 @@ void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_t
 				upper_ladders.add(new Floor(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), ladder_tex, screen));
 				break;
 			case 4:
-				trophy = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), TROPHY_WIDTH, TROPHY_HEIGHT, trophy_tex, screen);
+				trophy = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), TROPHY_WIDTH, TROPHY_HEIGHT, trophy_tex, trophy_tex->w, screen);
+				break;
+			case 5:
+				princess = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 5, PRINCESS_WIDTH, PRINCESS_HEIGHT, princess_tex, princess_tex->w, screen);
+				ending_area = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 5, ENDING_AREA_WIDTH, ENDING_AREA_HEIGHT, NULL, 0, NULL);
 				break;
 			}
 		}
@@ -56,11 +60,14 @@ void Map::draw() {
 	for (int i = 0; i < upper_ladders.get_size(); i++) {
 		upper_ladders.get(i)->draw();
 	}
+
 	if(unset_trophy!=1)
 		trophy->draw();
+
+	princess->draw();
 	if (set_ending) {
 		char text[128];
-		sprintf(text, "Gratulacje! Podejdz do ksiezniczki.");
+		sprintf(text, "Congratulations! Come closer to the Princess.");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 70, text, charset);
 	}
 }

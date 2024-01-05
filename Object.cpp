@@ -1,16 +1,21 @@
 #include "Object.h"
-Object::Object(int x, int y, int width, int height, SDL_Surface* texture, SDL_Surface* screen) {
+Object::Object(int x, int y, int width, int height, SDL_Surface* texture, int frame_width, SDL_Surface* screen) {
 	this->x = x;
 	this->y = y;
 	this->width = width;
 	this->height = height;
-
+	this->frame_width = frame_width;
+	if(texture!=NULL && width > frame_width)
+		this->animation = new Animation(texture, frame_width);
 	this->texture = texture;
 	this->screen = screen;
 }
 
 void Object::draw() {
-	DrawSurface(screen, texture, x+width/2, y+width/2);
+	if(width==frame_width)
+		DrawSurface(screen, texture, x+width/2, y+width/2);
+	else
+		animation->draw_frame(screen, x, y);
 }
 
 int Object::isCollision(Object* a) {

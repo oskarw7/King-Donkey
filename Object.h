@@ -5,6 +5,8 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL.h"
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
+
+#include "Animation.h"
 #include "utils.h"
 #include <math.h>
 
@@ -14,17 +16,19 @@ extern "C" {
 class Object {
 public:
 
-	Object(int x, int y, int width, int height, SDL_Surface* texture, SDL_Surface* screen);
+	Object(int x, int y, int width, int height, SDL_Surface* texture, int frame_width, SDL_Surface* screen);
 	int isCollision(Object* a);
 	int isOn(Object* a);
 	void draw();
 	void move(int mx, int my);
 
-protected: //ex public (do isOut w barrel)
+protected:
 	int x;
 	int y;
 	int width;
 	int height;
+	int frame_width;
+	Animation* animation;
 	SDL_Surface* texture;
 	SDL_Surface* screen;
 private:
