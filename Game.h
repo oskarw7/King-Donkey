@@ -15,8 +15,6 @@ extern "C" {
 
 #include "utils.h"
 #include "Player.h"
-#include "Floor.h"
-#include "Ladder.h"
 #include "Barrel.h"
 #include "BarrelList.h"
 #include "DonkeyKong.h"
@@ -87,7 +85,6 @@ private:
 
 	void init_screen();
 	void load_graphics();
-	//void player_graphics();
 	void load_error(SDL_Surface* surface, char* path);
 	void start();
 	void render();

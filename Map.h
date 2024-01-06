@@ -3,8 +3,6 @@
 
 #include "Object.h"
 #include "StaticObject.h"
-#include "Floor.h"
-#include "Ladder.h"
 #include "ObjectList.h"
 #include "utils.h"
 
@@ -14,6 +12,8 @@
 #define MAP_HEIGHT 21
 #define MAP_WIDTH 25
 #define MAP_PATH_LENGTH 17
+#define FLOOR_SIZE 32
+#define LADDER_SIZE 32
 #define PRINCESS_WIDTH 23
 #define PRINCESS_HEIGHT 32
 #define ENDING_AREA_WIDTH 32*3
@@ -40,7 +40,7 @@ public:
 	ObjectList standing_barrels;
 
 	void draw();
-	
+	~Map();
 private:
 	SDL_Surface* screen;
 	SDL_Surface* charset;

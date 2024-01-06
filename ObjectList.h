@@ -11,7 +11,7 @@ public:
 
 	int get_size();
 	StaticObject* get(int i);
-
+	~ObjectList();
 private:
 	int size;
 	StaticObject** objects;

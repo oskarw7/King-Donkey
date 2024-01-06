@@ -9,20 +9,18 @@ extern "C" {
 
 #include <iostream>
 #include "Object.h"
-#include "Ladder.h"
 #include "Map.h"
-#include "Floor.h"
 #include "Animation.h"
 
-#define WALKING_LEFT_PATH "./Assets/run_left.bmp"
-#define WALKING_RIGHT_PATH "./Assets/run_right.bmp"
+#define RUN_LEFT_PATH "./Assets/run_left.bmp"
+#define RUN_RIGHT_PATH "./Assets/run_right.bmp"
 #define CLIMB_PATH "./Assets/climb.bmp"
 #define STEADY_CLIMB_PATH "./Assets/steady_climb.bmp"
 #define BACK_PATH "./Assets/turn_back.bmp"
-#define STANDING_LEFT_PATH "./Assets/stand_left.bmp"
-#define STANDING_RIGHT_PATH "./Assets/stand_right.bmp"
-#define	JUMPING_LEFT_PATH "./Assets/jump_left.bmp"
-#define	JUMPING_RIGHT_PATH "./Assets/jump_right.bmp"
+#define STAND_LEFT_PATH "./Assets/stand_left.bmp"
+#define STAND_RIGHT_PATH "./Assets/stand_right.bmp"
+#define	JUMP_LEFT_PATH "./Assets/jump_left.bmp"
+#define	JUMP_RIGHT_PATH "./Assets/jump_right.bmp"
 
 
 #define PLAYER_WIDTH 28
@@ -32,13 +30,13 @@ extern "C" {
 #define JUMP_FORCE 20
 
 struct PlayerAnimations {
-	Animation* walking_left;
-	Animation* walking_right;
+	Animation* run_left;
+	Animation* run_right;
 	Animation* climb;
 	Animation* steady_climb;
 	Animation* back;
-	Animation* standing_left;
-	Animation* standing_right;
+	Animation* stand_left;
+	Animation* stand_right;
 	Animation* jump_left;
 	Animation* jump_right;
 };
@@ -50,7 +48,7 @@ public:
 		this->lives = PLAYER_LIVES;
 		this->score = 0;
 		load_player_graphics();
-		current_animation = animations.standing_left;
+		current_animation = animations.stand_left;
 	}
 	int score;
 	int speed;
@@ -66,15 +64,17 @@ public:
 	int touch_tile(Map* map);
 	int above_ladder(Map* map);
 	int on_upper_ladder(Map* map);
-	SDL_Surface* walking_left_tex;
-	SDL_Surface* walking_right_tex;
+	SDL_Surface* run_left_tex;
+	SDL_Surface* run_right_tex;
 	SDL_Surface* climb_tex;
 	SDL_Surface* steady_climb_tex;
 	SDL_Surface* back_tex;
-	SDL_Surface* standing_left_tex;
-	SDL_Surface* standing_right_tex;
-	SDL_Surface* jumping_left_tex;
-	SDL_Surface* jumping_right_tex;
+	SDL_Surface* stand_left_tex;
+	SDL_Surface* stand_right_tex;
+	SDL_Surface* jump_left_tex;
+	SDL_Surface* jump_right_tex;
+
+	~Player();
 private:
 	void load_player_graphics();
 };

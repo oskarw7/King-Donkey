@@ -23,3 +23,10 @@ int ObjectList::get_size() {
 StaticObject* ObjectList::get(int i) {
 	return objects[i];
 }
+
+ObjectList::~ObjectList() {
+	for (int i = 0; i < size; i++) {
+		delete objects[i];
+	}
+	delete[] objects;
+}

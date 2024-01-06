@@ -29,13 +29,13 @@ void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_t
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			switch (map[i][j]) {
 			case 1:
-				tiles.add(new Floor(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), floor_tex, screen));
+				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor_tex, screen));
 				break;
 			case 2:
-				ladders.add(new Ladder(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - MAP_HEIGHT * LADDER_SIZE), ladder_tex, screen));
+				ladders.add(new StaticObject(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - MAP_HEIGHT * LADDER_SIZE), LADDER_SIZE, LADDER_SIZE, ladder_tex, screen));
 				break;
 			case 3:
-				upper_ladders.add(new Ladder(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), ladder_tex, screen));
+				upper_ladders.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), LADDER_SIZE, LADDER_SIZE, ladder_tex, screen));
 				break;
 			case 4:
 				trophy = new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 5, TROPHY_WIDTH, TROPHY_HEIGHT, trophy_tex, screen);
@@ -66,7 +66,7 @@ void Map::draw() {
 		standing_barrels.get(i)->draw();
 	}
 
-	if(unset_trophy!=1)
+	if (unset_trophy != 1)
 		trophy->draw();
 
 	princess->draw();
@@ -75,4 +75,9 @@ void Map::draw() {
 		sprintf(text, "Congratulations! Come closer to the Princess.");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 70, text, charset);
 	}
+}
+
+Map::~Map() {
+	SDL_FreeSurface(screen);
+	SDL_FreeSurface(charset);
 }

@@ -12,6 +12,7 @@ public:
 	int get_size();
 	Barrel* get(int i);
 	void remove(Barrel* object);
+	~BarrelList();
 private:
 	int size;
 	Barrel** barrels;

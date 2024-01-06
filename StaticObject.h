@@ -10,6 +10,7 @@ public:
 		this->texture = texture;
 	};
 	void draw();
+	~StaticObject();
 private:
 	SDL_Surface* texture;
 };

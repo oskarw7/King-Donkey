@@ -12,3 +12,8 @@ int DonkeyKong::get_frame_index() {
 	return -1;
 		
 }
+
+DonkeyKong::~DonkeyKong() {
+	delete animation;
+	SDL_FreeSurface(texture);
+}

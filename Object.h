@@ -17,13 +17,15 @@ public:
 
 	Object(int x, int y, int width, int height, SDL_Surface* screen);
 	int isCollision(Object* a);
+	int isQuarterCollision(Object* a);
 	int isOn(Object* a);
+	int isTierceOn(Object* a);
 	void move(int mx, int my);
 	int get_x() { return x; };
 	int get_y() { return y; };
 	int get_height() { return height; };
 	int get_width() { return width; };
-
+	virtual ~Object();
 protected:
 	int x;
 	int y;

@@ -13,7 +13,7 @@ public:
 	void draw_frame(SDL_Surface* screen, int x, int y, double time);
 	void next_frame();
 	int get_index() { return frame_index; };
-
+	~Animation();
 private:
 	int frame_index;
 	int frame_count;

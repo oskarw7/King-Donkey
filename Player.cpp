@@ -2,12 +2,12 @@
 
 int Player::on_ladder(Map* map) {
 	for (int i = 0; i < map->ladders.get_size(); i++) {
-		if (isCollision(map->ladders.get(i))) {
+		if (isQuarterCollision(map->ladders.get(i))) {
 			return 1;
 		}
 	}
 	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isCollision(map->upper_ladders.get(i))) {
+		if (isQuarterCollision(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -38,7 +38,7 @@ int Player::touch_tile(Map* map) {
 
 int Player::above_ladder(Map* map) {
 	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isOn(map->upper_ladders.get(i))) {
+		if (isTierceOn(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -48,7 +48,7 @@ int Player::above_ladder(Map* map) {
 
 int Player::on_upper_ladder(Map* map) {
 	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isCollision(map->upper_ladders.get(i))) {
+		if (isQuarterCollision(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -73,73 +73,82 @@ void Player::player_move(int mx, int my) {
 	}
 }
 
+void load_error(char* path) {
+	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
+	exit(1);
+}
+
 void Player::load_player_graphics() {
-	walking_left_tex = SDL_LoadBMP(WALKING_LEFT_PATH);
-	if (walking_left_tex == NULL) {
-		//load_error(walking_left_tex, WALKING_LEFT_PATH);
-		exit(1);
+	run_left_tex = SDL_LoadBMP(RUN_LEFT_PATH);
+	if (run_left_tex == NULL) {
+		load_error(RUN_LEFT_PATH);
 	};
 
-	walking_right_tex = SDL_LoadBMP(WALKING_RIGHT_PATH);
-	if (walking_right_tex == NULL) {
-		//load_error(walking_right_tex, WALKING_RIGHT_PATH);
-		exit(1);
+	run_right_tex = SDL_LoadBMP(RUN_RIGHT_PATH);
+	if (run_right_tex == NULL) {
+		load_error(RUN_RIGHT_PATH);
 	};
 
 	climb_tex = SDL_LoadBMP(CLIMB_PATH);
 	if (climb_tex == NULL) {
-		//load_error(climb_tex, CLIMB_PATH);
-		exit(1);
+		load_error(CLIMB_PATH);;
 	};
 
 	steady_climb_tex = SDL_LoadBMP(STEADY_CLIMB_PATH);
 	if (steady_climb_tex == NULL) {
-		//load_error(climb_tex, CLIMB_PATH);
-		exit(1);
+		load_error(CLIMB_PATH);
 	};
 
 	back_tex = SDL_LoadBMP(BACK_PATH);
 	if (back_tex == NULL) {
-		//load_error(climb_tex, CLIMB_PATH);
-		exit(1);
+		load_error(CLIMB_PATH);
 	};
 
 
-	standing_left_tex = SDL_LoadBMP(STANDING_LEFT_PATH);
-	if (standing_left_tex == NULL) {
-		//load_error(standing_left_tex, STANDING_LEFT_PATH);
-		exit(1);
+	stand_left_tex = SDL_LoadBMP(STAND_LEFT_PATH);
+	if (stand_left_tex == NULL) {
+		load_error(STAND_LEFT_PATH);
 	};
 
-	standing_right_tex = SDL_LoadBMP(STANDING_RIGHT_PATH);
-	if (standing_right_tex == NULL) {
-		//load_error(standing_right_tex, STANDING_RIGHT_PATH);
-		exit(1);
+	stand_right_tex = SDL_LoadBMP(STAND_RIGHT_PATH);
+	if (stand_right_tex == NULL) {
+		load_error(STAND_RIGHT_PATH);
 	};
 
-	jumping_left_tex = SDL_LoadBMP(JUMPING_LEFT_PATH);
-	if (jumping_left_tex == NULL) {
-		//load_error(jumping_left_tex, JUMPING_LEFT_PATH);
-		exit(1);
+	jump_left_tex = SDL_LoadBMP(JUMP_LEFT_PATH);
+	if (jump_left_tex == NULL) {
+		load_error(JUMP_LEFT_PATH);
 	};
 
-	jumping_right_tex = SDL_LoadBMP(JUMPING_RIGHT_PATH);
-	if (jumping_right_tex == NULL) {
-		//load_error(jumping_right_tex, JUMPING_RIGHT_PATH);
-		exit(1);
+	jump_right_tex = SDL_LoadBMP(JUMP_RIGHT_PATH);
+	if (jump_right_tex == NULL) {
+		load_error(JUMP_RIGHT_PATH);
 	};
 
-	animations.walking_left = new Animation(walking_left_tex, PLAYER_WIDTH, 0.2);
-	animations.walking_right = new Animation(walking_right_tex, PLAYER_WIDTH, 0.2);
+	animations.run_left = new Animation(run_left_tex, PLAYER_WIDTH, 0.2);
+	animations.run_right = new Animation(run_right_tex, PLAYER_WIDTH, 0.2);
 	animations.climb = new Animation(climb_tex, PLAYER_WIDTH, 0.5);
 	animations.steady_climb = new Animation(steady_climb_tex, PLAYER_WIDTH, 0.3);
 	animations.back = new Animation(back_tex, PLAYER_WIDTH, 0.5);
-	animations.standing_left = new Animation(standing_left_tex, PLAYER_WIDTH, 0.5);
-	animations.standing_right = new Animation(standing_right_tex, PLAYER_WIDTH, 0.5);
-	animations.jump_left = new Animation(jumping_left_tex, PLAYER_WIDTH, 0.5);
-	animations.jump_right = new Animation(jumping_right_tex, PLAYER_WIDTH, 0.5);
+	animations.stand_left = new Animation(stand_left_tex, PLAYER_WIDTH, 0.5);
+	animations.stand_right = new Animation(stand_right_tex, PLAYER_WIDTH, 0.5);
+	animations.jump_left = new Animation(jump_left_tex, PLAYER_WIDTH, 0.5);
+	animations.jump_right = new Animation(jump_right_tex, PLAYER_WIDTH, 0.5);
 }
 
 void Player::draw(double time) {
 	current_animation->draw_frame(screen, x, y, time);
+}
+
+Player::~Player() {
+	delete current_animation;
+	SDL_FreeSurface(run_left_tex);
+	SDL_FreeSurface(run_right_tex);
+	SDL_FreeSurface(climb_tex);
+	SDL_FreeSurface(steady_climb_tex);
+	SDL_FreeSurface(back_tex);
+	SDL_FreeSurface(stand_left_tex);
+	SDL_FreeSurface(stand_right_tex);
+	SDL_FreeSurface(jump_left_tex);
+	SDL_FreeSurface(jump_right_tex);
 }

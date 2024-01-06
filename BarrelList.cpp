@@ -29,3 +29,10 @@ int BarrelList::get_size() {
 Barrel* BarrelList::get(int i) {
 	return barrels[i];
 }
+
+BarrelList::~BarrelList() {
+	for (int i = 0; i < size; i++) {
+		delete barrels[i];
+	}
+	delete[] barrels;
+}

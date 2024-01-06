@@ -9,7 +9,7 @@ Game::Game() {
 
 	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 
-	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_WIDTH, screen));
+	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 
 	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
 
@@ -116,13 +116,11 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 
 void Game::start() {
 	int frames = 0;
-
 	double t1 = SDL_GetTicks();
 	double t2;
 	double fpsTimer = 0;
 	double fps = 0;
 	double delta = 0;
-
 	worldTime = 0;
 
 	while (!quit) {
@@ -285,11 +283,11 @@ void Game::update(double delta) {
 		barrels.get(i)->barrel_gravity(map, delta);
 
 	if (!pk.up && !pk.down && !pk.left && !pk.right && !pk.space) {
-		if (player->current_animation == player->animations.jump_left || player->current_animation == player->animations.walking_left) {
-			player->current_animation = player->animations.standing_left;
+		if (player->current_animation == player->animations.jump_left || player->current_animation == player->animations.run_left) {
+			player->current_animation = player->animations.stand_left;
 		}
-		else if (player->current_animation == player->animations.jump_right || player->current_animation == player->animations.walking_right) {
-			player->current_animation = player->animations.standing_right;
+		else if (player->current_animation == player->animations.jump_right || player->current_animation == player->animations.run_right) {
+			player->current_animation = player->animations.stand_right;
 		}
 		else if (player->above_ladder(map) && player->current_animation == player->animations.climb)
 			player->current_animation = player->animations.back;
@@ -314,21 +312,21 @@ void Game::update(double delta) {
 	else if (pk.left) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
 			mx -= player->speed * delta;
-			player->current_animation = player->animations.walking_left;
+			player->current_animation = player->animations.run_left;
 		}
 	}
 	else if (pk.right) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
 			mx += player->speed * delta;
-			player->current_animation = player->animations.walking_right;
+			player->current_animation = player->animations.run_right;
 		}
 	}
 	if (pk.space) {
 		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) {
 			my -= JUMP_FORCE * GRAVITY * delta; //rozbicie na parametry ruchu (x, v, a)
-			if(player->current_animation == player->animations.walking_left || player->current_animation == player->animations.standing_left)
+			if(player->current_animation == player->animations.run_left || player->current_animation == player->animations.stand_left)
 				player->current_animation = player->animations.jump_left;
-			else if(player->current_animation == player->animations.walking_right || player->current_animation == player->animations.standing_right)
+			else if(player->current_animation == player->animations.run_right || player->current_animation == player->animations.stand_right)
 				player->current_animation = player->animations.jump_right;
 		}
 	}
@@ -344,7 +342,7 @@ void Game::update(double delta) {
 	hit_barrel();
 
 	if (donkey_kong->get_frame_index() == 0 && !donkey_kong->hasThrown) {
-		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_WIDTH, screen));
+		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 		donkey_kong->hasThrown = 1;
 	}
 	else if (donkey_kong->get_frame_index() == 2)
@@ -353,17 +351,6 @@ void Game::update(double delta) {
 	check_trophy();
 
 	check_princess();
-}
-
-void Game::stop() {
-	SDL_FreeSurface(charset);
-	SDL_FreeSurface(screen);
-	SDL_DestroyTexture(scrtex);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-
-	SDL_Quit();
-	exit(0);
 }
 
 void Game::players_gravity(double delta) {
@@ -379,6 +366,8 @@ void Game::hit_barrel() {
 		if (player->isCollision(barrel) && barrel->player_hit == 0) {
 			printf("HIT!");
 			player->lives--;
+			if (player->lives == 0)
+				stop();
 			barrel->player_hit = 1;
 			game_started = 0;
 			game_paused = 1;
@@ -430,8 +419,7 @@ void Game::check_princess() {
 }
 
 void Game::check_trophy() {
-	if (player->isCollision(map->trophy)) {
-		delete[] map->trophy;
+	if (player->isCollision(map->trophy) && !map->unset_trophy) {
 		player->score += 300;
 		map->unset_trophy = 1;
 	}
@@ -441,4 +429,24 @@ void Game::draw_lives() {
 	for (int i = 0; i < player->lives; i++) {
 		DrawSurface(screen, heart_tex, i * (HEART_WIDTH+5) + HEART_START_X, HEART_START_Y);
 	}
+}
+
+void Game::stop() {
+	SDL_FreeSurface(screen);
+	SDL_FreeSurface(charset);
+	SDL_FreeSurface(floor_tex);
+	SDL_FreeSurface(ladder_tex);
+	SDL_FreeSurface(barrel_tex);
+	SDL_FreeSurface(standing_barrel_tex);
+	SDL_FreeSurface(princess_tex);
+	SDL_FreeSurface(trophy_tex);
+	SDL_FreeSurface(heart_tex);
+	SDL_FreeSurface(donkey_kong_tex);
+
+	SDL_DestroyTexture(scrtex);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+
+	SDL_Quit();
+	exit(0);
 }

@@ -20,10 +20,12 @@ void Barrel::barrel_gravity(Map* map, double delta) {
 
 void Barrel::update(Map* map, double delta) {
 	if (!on_ground(map) && !change_direction && x>=0) {
+		current_animation = animations.falling;
 		vector *= -1;
 		change_direction = 1;
 	}
 	else if (on_ground(map) && change_direction) {
+		current_animation = animations.rolling;
 		change_direction = 0;
 	}
 
@@ -40,6 +42,29 @@ int Barrel::isOut() {
 	return 0;
 }
 
+void Barrel::load_barrel_graphics() {
+	rolling_tex = SDL_LoadBMP(ROLLING_PATH);
+	if (rolling_tex == NULL) {
+		//load_error(rolling_tex, ROLLING_PATH);
+		exit(1);
+	}
+
+	falling_tex = SDL_LoadBMP(FALLING_PATH);
+	if (falling_tex == NULL) {
+		//load_error(falling_tex, FALLING_PATH);
+		exit(1);
+	}
+
+	animations.rolling = new Animation(rolling_tex, BARREL_WIDTH, 0.25);
+	animations.falling = new Animation(falling_tex, HORIZONTAL_BARREL, 0.25);
+}
+
 void Barrel::draw(double time) {
-	animation->draw_frame(screen, x, y, time);
+	current_animation->draw_frame(screen, x, y, time);
+}
+
+Barrel::~Barrel() {
+	delete jump_hitbox;
+	delete current_animation;
+	SDL_FreeSurface(texture);
 }

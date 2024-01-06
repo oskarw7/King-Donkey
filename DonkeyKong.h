@@ -21,6 +21,7 @@ public:
 	int get_frame_index();
 
 	int hasThrown;
+	~DonkeyKong();
 private:
 	SDL_Surface* texture;
 	Animation* animation;
