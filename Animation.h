@@ -9,9 +9,10 @@ extern "C" {
 
 class Animation {
 public:
-	Animation(SDL_Surface* sprite, int f_width);
-	void draw_frame(SDL_Surface* screen, int x, int y);
-	
+	Animation(SDL_Surface* sprite, int f_width, double time_interval);
+	void draw_frame(SDL_Surface* screen, int x, int y, double time);
+	void next_frame();
+	int get_index() { return frame_index; };
 
 private:
 	int frame_index;
@@ -19,8 +20,8 @@ private:
 	int f_width;
 	SDL_Surface* sprite;
 	SDL_Rect rect;
-
-	void next_frame();
+	double time_interval;
+	double last_time;
 };
 
 #endif

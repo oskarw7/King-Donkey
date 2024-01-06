@@ -19,6 +19,7 @@ extern "C" {
 #include "Ladder.h"
 #include "Barrel.h"
 #include "BarrelList.h"
+#include "DonkeyKong.h"
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
@@ -27,13 +28,9 @@ extern "C" {
 #define HEART_WIDTH 25
 #define HEART_START_X 20
 #define HEART_START_Y 70
-#define KONG_START_X 17
-#define KONG_START_Y 147
-#define KONG_WIDTH 81
-#define KONG_HEIGHT 59
 
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
-#define PLAYER_PATH "./Assets/player_sheet.bmp"
+
 #define FLOOR_PATH "./Assets/floor.bmp"
 #define LADDER_PATH	"./Assets/ladder.bmp"
 #define BARREL_PATH "./Assets/barrel_sheet.bmp"
@@ -68,7 +65,6 @@ private:
 
 	SDL_Surface* screen;
 	SDL_Surface* charset;
-	SDL_Surface* player_tex;
 	SDL_Surface* floor_tex;
 	SDL_Surface* ladder_tex;
 	SDL_Surface* barrel_tex;
@@ -85,12 +81,13 @@ private:
 	Player* player; 
 	Map* map;
 	BarrelList barrels;
-	Object* donkey_kong;
+	DonkeyKong* donkey_kong;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
 
 	void init_screen();
 	void load_graphics();
+	//void player_graphics();
 	void load_error(SDL_Surface* surface, char* path);
 	void start();
 	void render();

@@ -33,9 +33,13 @@ void Barrel::update(Map* map, double delta) {
 	}
 }
 
-int Barrel::isOut() { //mozna do object -> zmienic scope na private
+int Barrel::isOut() {
 	if (x >= screen->w || x<=0) {
 		return 1;
 	}
 	return 0;
+}
+
+void Barrel::draw(double time) {
+	animation->draw_frame(screen, x, y, time);
 }

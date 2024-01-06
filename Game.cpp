@@ -5,13 +5,13 @@ Game::Game() {
 	load_graphics();
 	SDL_ShowCursor(SDL_DISABLE);
 
-	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT, player_tex, PLAYER_WIDTH, screen);
+	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT, screen);
 
 	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 
 	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_WIDTH, screen));
 
-	donkey_kong = new Object(KONG_START_X, KONG_START_Y, KONG_WIDTH, KONG_HEIGHT, donkey_kong_tex, KONG_WIDTH, screen);
+	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
 
 	quit = 0;
 
@@ -62,11 +62,6 @@ void Game::load_graphics() {
 	};
 	SDL_SetColorKey(charset, true, 0x000000);
 
-	player_tex = SDL_LoadBMP(PLAYER_PATH);
-	if (player_tex == NULL) {
-		load_error(player_tex, PLAYER_PATH);
-	};
-
 	floor_tex = SDL_LoadBMP(FLOOR_PATH);
 	if (floor_tex == NULL) {
 		load_error(floor_tex, FLOOR_PATH);
@@ -105,7 +100,7 @@ void Game::load_graphics() {
 	donkey_kong_tex = SDL_LoadBMP(DONKEY_KONG_PATH);
 	if (donkey_kong_tex == NULL) {
 		load_error(donkey_kong_tex, DONKEY_KONG_PATH);
-	}
+	}	
 }
 
 void Game::load_error(SDL_Surface* surface, char* path) {
@@ -258,17 +253,17 @@ void Game::render() {
 	draw_lives();
 
 	for (int i = 0; i < barrels.get_size(); i++) {
-		barrels.get(i)->draw();
+		barrels.get(i)->draw(worldTime);
 	}
 
-	donkey_kong->draw();
+	donkey_kong->draw(worldTime);
 
-	player->draw();
+	player->draw(worldTime);
 
 	if (game_paused) {
 		SDL_FillRect(screen, NULL, czerwony);
 		DrawRectangle(screen, SCREEN_WIDTH/8, SCREEN_HEIGHT/3, 6*SCREEN_WIDTH/8, SCREEN_HEIGHT/3, czerwony, czarny);
-		sprintf(text, "You losed life. Do you want to continue?");
+		sprintf(text, "You have lost life. Do you want to continue?");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT/2 - 20, text, charset);
 		sprintf(text, "C - CONTINUE");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2, text, charset);
@@ -285,32 +280,57 @@ void Game::render() {
 
 void Game::update(double delta) {
 	players_gravity(delta);
-
+	
 	for (int i = 0; i < barrels.get_size(); i++)
 		barrels.get(i)->barrel_gravity(map, delta);
+
+	if (!pk.up && !pk.down && !pk.left && !pk.right && !pk.space) {
+		if (player->current_animation == player->animations.jump_left || player->current_animation == player->animations.walking_left) {
+			player->current_animation = player->animations.standing_left;
+		}
+		else if (player->current_animation == player->animations.jump_right || player->current_animation == player->animations.walking_right) {
+			player->current_animation = player->animations.standing_right;
+		}
+		else if (player->above_ladder(map) && player->current_animation == player->animations.climb)
+			player->current_animation = player->animations.back;
+		else if (player->on_ladder(map) && player->current_animation == player->animations.climb) //wspina sie dalej na szczycie drabiny, tylko przy przytrzymaniu
+			player->current_animation = player->animations.steady_climb;
+	}
 
 	int mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
-			my -= player->speed * delta;
+			my -= player->speed * delta; //dodac vx
+			if(player->current_animation != player->animations.back)
+				player->current_animation = player->animations.climb;
 		}
 	}
 	else if (pk.down) {
 		if ((player->on_ladder(map) && !player->on_ground(map)) || player->above_ladder(map)) {
 			my += player->speed * delta;
+			player->current_animation = player->animations.climb;
 		}
 	}
 	else if (pk.left) {
-		if(!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map))
+		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
 			mx -= player->speed * delta;
+			player->current_animation = player->animations.walking_left;
+		}
 	}
 	else if (pk.right) {
-		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map))
+		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
 			mx += player->speed * delta;
+			player->current_animation = player->animations.walking_right;
+		}
 	}
 	if (pk.space) {
-		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map))))
+		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) {
 			my -= JUMP_FORCE * GRAVITY * delta; //rozbicie na parametry ruchu (x, v, a)
+			if(player->current_animation == player->animations.walking_left || player->current_animation == player->animations.standing_left)
+				player->current_animation = player->animations.jump_left;
+			else if(player->current_animation == player->animations.walking_right || player->current_animation == player->animations.standing_right)
+				player->current_animation = player->animations.jump_right;
+		}
 	}
 	player->player_move(mx, my);
 
@@ -323,8 +343,12 @@ void Game::update(double delta) {
 
 	hit_barrel();
 
-	if (fmod(worldTime, BARREL_FREQUENCY) < BARREL_TIME_MARGIN)
+	if (donkey_kong->get_frame_index() == 0 && !donkey_kong->hasThrown) {
 		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, barrel_tex, BARREL_WIDTH, screen));
+		donkey_kong->hasThrown = 1;
+	}
+	else if (donkey_kong->get_frame_index() == 2)
+		donkey_kong->hasThrown = 0;
 
 	check_trophy();
 

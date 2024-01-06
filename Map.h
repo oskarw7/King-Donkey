@@ -2,6 +2,7 @@
 #define MAP_H
 
 #include "Object.h"
+#include "StaticObject.h"
 #include "Floor.h"
 #include "Ladder.h"
 #include "ObjectList.h"
@@ -13,14 +14,15 @@
 #define MAP_HEIGHT 21
 #define MAP_WIDTH 25
 #define MAP_PATH_LENGTH 17
-#define TROPHY_WIDTH 18
-#define TROPHY_HEIGHT 20
 #define PRINCESS_WIDTH 23
 #define PRINCESS_HEIGHT 32
 #define ENDING_AREA_WIDTH 32*3
 #define ENDING_AREA_HEIGHT PRINCESS_HEIGHT/20
+#define TROPHY_WIDTH 18
+#define TROPHY_HEIGHT 20
 #define STANDING_BARREL_WIDTH 19
 #define STANDING_BARREL_HEIGHT 29
+
 
 class Map {
 public:
@@ -32,8 +34,8 @@ public:
 	ObjectList upper_ladders;
 	ObjectList ladders;
 	ObjectList tiles;
-	Object* trophy;
-	Object* princess;
+	StaticObject* trophy;
+	StaticObject* princess;
 	Object* ending_area;
 	ObjectList standing_barrels;
 

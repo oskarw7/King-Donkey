@@ -2,11 +2,11 @@
 
 ObjectList::ObjectList() {
 	size = 0;
-	objects = new Object*[size];
+	objects = new StaticObject*[size];
 }
 
-void ObjectList::add(Object* object) {
-	Object** objects_ext = new Object*[size + 1];
+void ObjectList::add(StaticObject* object) {
+	StaticObject** objects_ext = new StaticObject*[size + 1];
 	for (int i = 0; i < size; i++) {
 		objects_ext[i] = objects[i];
 	}
@@ -20,6 +20,6 @@ int ObjectList::get_size() {
 	return size;
 }
 
-Object* ObjectList::get(int i) {
+StaticObject* ObjectList::get(int i) {
 	return objects[i];
 }

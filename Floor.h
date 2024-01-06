@@ -7,12 +7,17 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
 
-#include "Object.h"
+#include "StaticObject.h"
+
 #define FLOOR_SIZE 32
 
-class Floor : public Object {
+class Floor : public StaticObject {
 public:
-	Floor(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : Object(x, y, FLOOR_SIZE, FLOOR_SIZE, texture, texture->w, screen) {};
+	Floor(int x, int y, SDL_Surface* texture, SDL_Surface* screen) : StaticObject(x, y, FLOOR_SIZE, FLOOR_SIZE, texture, screen) {
+		this->texture = texture;
+	};
+private:
+	SDL_Surface* texture;
 };
 
 #endif
