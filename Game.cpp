@@ -13,6 +13,8 @@ Game::Game() {
 
 	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
 
+	score_plate = new ScorePlate(screen);
+
 	quit = 0;
 
 	first_completed = 0;
@@ -90,17 +92,27 @@ void Game::load_graphics() {
 	trophy_tex = SDL_LoadBMP(TROPHY_PATH);
 	if (trophy_tex == NULL) {
 		load_error(trophy_tex, TROPHY_PATH);
-	}
+	};
 
 	heart_tex = SDL_LoadBMP(HEART_PATH);
 	if (heart_tex == NULL) {
 		load_error(heart_tex, HEART_PATH);
-	}
+	};
 
 	donkey_kong_tex = SDL_LoadBMP(DONKEY_KONG_PATH);
 	if (donkey_kong_tex == NULL) {
 		load_error(donkey_kong_tex, DONKEY_KONG_PATH);
-	}	
+	};
+
+	plus100_tex = SDL_LoadBMP(PLUS100_PATH);
+	if (plus100_tex == NULL) {
+		load_error(plus100_tex, PLUS100_PATH);
+	};
+
+	plus300_tex = SDL_LoadBMP(PLUS300_PATH);
+	if (plus300_tex == NULL) {
+		load_error(plus300_tex, PLUS300_PATH);
+	};
 }
 
 void Game::load_error(SDL_Surface* surface, char* path) {
@@ -130,7 +142,7 @@ void Game::start() {
 		render();
 
 		if (game_started) {
-			update(delta*100);
+			update(delta);
 		}
 
 		// obs³uga zdarzeñ
@@ -249,6 +261,7 @@ void Game::render() {
 
 	map->draw();
 	draw_lives();
+	score_plate->check_draw(player->get_x(), player->get_y(), worldTime);
 
 	for (int i = 0; i < barrels.get_size(); i++) {
 		barrels.get(i)->draw(worldTime);
@@ -298,32 +311,35 @@ void Game::update(double delta) {
 	int mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
-			my -= player->speed * delta; //dodac vx
+			my -= player->climb_velocity * delta;
 			if(player->current_animation != player->animations.back)
 				player->current_animation = player->animations.climb;
 		}
 	}
 	else if (pk.down) {
 		if ((player->on_ladder(map) && !player->on_ground(map)) || player->above_ladder(map)) {
-			my += player->speed * delta;
+			my += player->climb_velocity * delta;
 			player->current_animation = player->animations.climb;
 		}
 	}
 	else if (pk.left) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
-			mx -= player->speed * delta;
+			mx -= player->velocity_x * delta;
 			player->current_animation = player->animations.run_left;
 		}
 	}
 	else if (pk.right) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
-			mx += player->speed * delta;
+			mx += player->velocity_x * delta;
 			player->current_animation = player->animations.run_right;
 		}
 	}
 	if (pk.space) {
-		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) {
-			my -= JUMP_FORCE * GRAVITY * delta; //rozbicie na parametry ruchu (x, v, a)
+		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) { //animacja skoku
+			//my -= JUMP_FORCE * GRAVITY * delta;
+			player->isJumping = 1;
+			player->velocity_y = -JUMP_VELOCITY;
+			my -= JUMP_VELOCITY * delta;
 			if(player->current_animation == player->animations.run_left || player->current_animation == player->animations.stand_left)
 				player->current_animation = player->animations.jump_left;
 			else if(player->current_animation == player->animations.run_right || player->current_animation == player->animations.stand_right)
@@ -355,9 +371,16 @@ void Game::update(double delta) {
 
 void Game::players_gravity(double delta) {
 	if (player->on_ladder(map) || player->on_ground(map)) {
+		player->isJumping = 0;
+		player->velocity_y = 0;
 		return;
 	}
-	player->player_move(0, GRAVITY*delta);
+	//player->player_move(0, GRAVITY*delta);
+	if ((!player->on_ladder(map) || !player->on_ground(map)) && player->velocity_y >= 0)
+		player->velocity_y = JUMP_VELOCITY;
+	player->velocity_y += GRAVITY * delta;
+	player->move(0, player->velocity_y * delta);
+
 }
 
 void Game::hit_barrel() {
@@ -376,6 +399,7 @@ void Game::hit_barrel() {
 		else if (player->isCollision(barrel->jump_hitbox) && barrel->player_hit == 0) {
 			player->score+=100;
 			barrel->player_hit = 1;
+			score_plate->set_new_plate(plus100_tex, worldTime);
 		}
 		
 	}
@@ -414,7 +438,7 @@ void Game::check_princess() {
 			third_completed = 1;
 			stop();
 		}
-		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT	);
+		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 	}
 }
 
@@ -422,6 +446,7 @@ void Game::check_trophy() {
 	if (player->isCollision(map->trophy) && !map->unset_trophy) {
 		player->score += 300;
 		map->unset_trophy = 1;
+		score_plate->set_new_plate(plus300_tex, worldTime);
 	}
 }
 

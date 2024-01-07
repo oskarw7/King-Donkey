@@ -10,7 +10,7 @@ extern "C" {
 #include <math.h>
 
 
-#define	GRAVITY 3.5
+#define	GRAVITY 400.0
 
 class Object {
 public:

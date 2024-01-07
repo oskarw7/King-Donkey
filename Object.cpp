@@ -39,9 +39,9 @@ int Object::isTierceOn(Object* a) {
 double Object::set_refresh_margin() {
 	double fraction;
 	if (modf(GRAVITY, &fraction) == 0)
-		return GRAVITY + 1;
+		return GRAVITY/100 + 1;
 	else
-		return ceil(GRAVITY);
+		return ceil(GRAVITY/100);
 }
 
 void Object::move(int mx, int my) {

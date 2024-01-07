@@ -8,6 +8,8 @@
 #include<stdio.h>
 #include<string.h>
 
+#include <iostream>
+
 extern "C" {
 #include"./SDL2-2.0.10/include/SDL.h"
 #include"./SDL2-2.0.10/include/SDL_main.h"
@@ -18,6 +20,7 @@ extern "C" {
 #include "Barrel.h"
 #include "BarrelList.h"
 #include "DonkeyKong.h"
+#include "ScorePlate.h"
 
 #define TITLE "King Donkey"
 #define SCREEN_WIDTH 800
@@ -28,7 +31,6 @@ extern "C" {
 #define HEART_START_Y 70
 
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
-
 #define FLOOR_PATH "./Assets/floor.bmp"
 #define LADDER_PATH	"./Assets/ladder.bmp"
 #define BARREL_PATH "./Assets/barrel_sheet.bmp"
@@ -37,6 +39,8 @@ extern "C" {
 #define TROPHY_PATH "./Assets/trophy.bmp"
 #define HEART_PATH "./Assets/heart.bmp"
 #define DONKEY_KONG_PATH "./Assets/donkey_kong_sheet.bmp"
+#define	PLUS100_PATH "./Assets/plus100.bmp"
+#define	PLUS300_PATH "./Assets/plus300.bmp"
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
@@ -71,6 +75,8 @@ private:
 	SDL_Surface* trophy_tex;
 	SDL_Surface* heart_tex;
 	SDL_Surface* donkey_kong_tex;
+	SDL_Surface* plus100_tex;
+	SDL_Surface* plus300_tex;
 
 	SDL_Texture* scrtex;
 	SDL_Window* window;
@@ -80,6 +86,7 @@ private:
 	Map* map;
 	BarrelList barrels;
 	DonkeyKong* donkey_kong;
+	ScorePlate* score_plate;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
 
