@@ -23,7 +23,7 @@ int Object::isQuarterCollision(Object* a) {
 }
 
 int Object::isOn(Object* a) {
-	if (((y + height - a->y >= 0) && (y + height - a->y <=	set_refresh_margin())) && (x < a->x + a->width) && (x + width > a->x)) {
+	if (((y + height - a->y >= 0) && (y + height - a->y <= set_refresh_margin())) && (x < a->x + a->width) && (x + width > a->x)) {
 		return 1;
 	}
 	return 0;
@@ -31,6 +31,13 @@ int Object::isOn(Object* a) {
 
 int Object::isTierceOn(Object* a) {
 	if (((y + height - a->y >= 0) && (y + height - a->y <= set_refresh_margin())) && (x < a->x + a->width / 4) && (x + width / 4 > a->x)) {
+		return 1;
+	}
+	return 0;
+}
+
+int Object::check_broad_area(Object* a) {
+	if ((y <= a->y + a->height) && (y + height >= a->y) && (x < a->x + a->width) && (x + width > a->x)) {
 		return 1;
 	}
 	return 0;

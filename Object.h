@@ -10,7 +10,7 @@ extern "C" {
 #include <math.h>
 
 
-#define	GRAVITY 450.0
+#define	GRAVITY 400.0
 
 class Object {
 public:
@@ -20,6 +20,7 @@ public:
 	int isQuarterCollision(Object* a);
 	int isOn(Object* a);
 	int isTierceOn(Object* a);
+	int check_broad_area(Object* a);
 	void move(int mx, int my);
 	int get_x() { return x; };
 	int get_y() { return y; };

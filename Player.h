@@ -27,7 +27,8 @@ extern "C" {
 #define PLAYER_VELOCITY_X 200.0
 #define CLIMB_VELOCITY 200.0
 #define PLAYER_LIVES 4
-#define JUMP_VELOCITY 250.0
+#define JUMP_VELOCITY 225.0
+#define SPEED_X_COOLDOWN 125.0
 
 struct PlayerAnimations {
 	Animation* run_left;

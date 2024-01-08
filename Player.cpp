@@ -139,7 +139,7 @@ void Player::load_player_graphics() {
 void Player::draw(double time, Map* map) {
 	for (int i = 0; i < map->tiles.get_size(); i++) {
 		if (isOn(map->tiles.get(i))) {
-			
+			y = map->tiles.get(i)->get_y() - PLAYER_HEIGHT;
 		}
 	}
 	current_animation->draw_frame(screen, x, y, time);

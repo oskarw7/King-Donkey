@@ -346,6 +346,7 @@ void Game::update(double delta) {
 		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) {
 			//my -= JUMP_FORCE * GRAVITY * delta;
 			player->isJumping = 1;
+			player->velocity_x = SPEED_X_COOLDOWN;
 			player->velocity_y = -JUMP_VELOCITY;
 			my -= JUMP_VELOCITY * delta;
 			if(player->current_animation == player->animations.run_left || player->current_animation == player->animations.stand_left)
@@ -354,6 +355,8 @@ void Game::update(double delta) {
 				player->current_animation = player->animations.jump_right;
 		}
 	}
+	//std::cout << player->get_y() << std::endl;
+	std::cout << my << std::endl;
 	player->player_move(mx, my);
 
 	for (int i = 0; i < barrels.get_size(); i++) {
@@ -380,14 +383,18 @@ void Game::update(double delta) {
 void Game::players_gravity(double delta) {
 	if (player->on_ladder(map) || player->on_ground(map)) {
 		player->isJumping = 0;
-		player->velocity_y = 0;
+		player->velocity_x = PLAYER_VELOCITY_X;
+		player->velocity_y = JUMP_VELOCITY;
 		return;
 	}
 	//player->player_move(0, GRAVITY*delta);
-	if ((!player->on_ladder(map) || !player->on_ground(map)) && player->velocity_y >= 0)
-		player->velocity_y = JUMP_VELOCITY;
+	//if ((!player->on_ladder(map) && !player->on_ground(map)) && player->velocity_y >= 0){
+		//std::cout << "GRAVITY!" << std::endl;
+		//player->velocity_y = JUMP_VELOCITY;
+		
+	//}
 	player->velocity_y += GRAVITY * delta;
-	player->move(0, player->velocity_y * delta);
+	player->player_move(0, player->velocity_y * delta + GRAVITY * delta * delta);
 
 }
 

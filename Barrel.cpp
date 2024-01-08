@@ -2,7 +2,7 @@
 
 int Barrel::on_ground(Map* map) {
 	for (int i = 0; i < map->tiles.get_size(); i++) {
-		if (isOn(map->tiles.get(i))) {
+		if (check_broad_area(map->tiles.get(i))) {
 			return 1;
 		}
 	}
@@ -65,7 +65,7 @@ void Barrel::load_barrel_graphics() {
 
 void Barrel::draw(double time, Map* map) {
 	for (int i = 0; i < map->tiles.get_size(); i++) {
-		if (isOn(map->tiles.get(i))) {
+		if (check_broad_area(map->tiles.get(i))) {
 			y = map->tiles.get(i)->get_y() - BARREL_HEIGHT;
 		}
 	}
