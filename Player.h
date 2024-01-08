@@ -27,7 +27,7 @@ extern "C" {
 #define PLAYER_VELOCITY_X 200.0
 #define CLIMB_VELOCITY 200.0
 #define PLAYER_LIVES 4
-#define JUMP_VELOCITY 225.0
+#define JUMP_VELOCITY 250.0
 
 struct PlayerAnimations {
 	Animation* run_left;
@@ -64,12 +64,15 @@ public:
 	Animation* current_animation;
 
 	void player_move(int mx, int my);
-	void draw(double time);
+	void draw(double time, Map* map);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
 	int touch_tile(Map* map);
 	int above_ladder(Map* map);
 	int on_upper_ladder(Map* map);
+
+	~Player();
+private:
 	SDL_Surface* run_left_tex;
 	SDL_Surface* run_right_tex;
 	SDL_Surface* climb_tex;
@@ -79,12 +82,7 @@ public:
 	SDL_Surface* stand_right_tex;
 	SDL_Surface* jump_left_tex;
 	SDL_Surface* jump_right_tex;
-	SDL_Surface* plus100_tex;
-	SDL_Surface* plus300_tex;
-	SDL_Surface* plus_tex;
 
-	~Player();
-private:
 	void load_player_graphics();
 };
 #endif

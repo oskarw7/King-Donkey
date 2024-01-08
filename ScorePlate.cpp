@@ -15,3 +15,8 @@ void ScorePlate::check_draw(int x, int y, double time) {
 		current_score_plate = NULL;
 	}
 }
+
+ScorePlate::~ScorePlate() {
+	SDL_FreeSurface(current_score_plate);
+	SDL_FreeSurface(screen);
+}

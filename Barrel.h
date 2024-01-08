@@ -28,7 +28,7 @@ class Barrel : public Object {
 public:
 	Barrel(int x, int y, int frame_width, SDL_Surface* screen) : Object(x, y, BARREL_WIDTH, BARREL_HEIGHT, screen) {
 		this->velocity_x = BARREL_VELOCITY_X;
-		this->velocity_y = 0;
+		this->velocity_y = BARREL_VELOCITY_Y;
 		this->change_direction = 0;
 		this->vector = 1;
 		jump_hitbox = new Object(x, y - JUMP_HITBOX_OFFSET, BARREL_WIDTH, BARREL_HEIGHT + JUMP_HITBOX_OFFSET, NULL);
@@ -38,7 +38,7 @@ public:
 		current_animation = animations.rolling;
 	};
 
-	void draw(double time);
+	void draw(double time, Map* map);
 	int on_ground(Map* map);
 	void update(Map* map, double delta);
 	void barrel_gravity(Map* map, double delta);
@@ -47,17 +47,18 @@ public:
 	double velocity_x;
 	double velocity_y;
 	Object* jump_hitbox;
-	SDL_Surface* texture;
-	SDL_Surface* rolling_tex;
-	SDL_Surface* falling_tex;
 	int player_hit;
-	struct BarrelAnimations animations;
-	Animation* current_animation;
 
 	~Barrel();
 private:
 	int change_direction;
 	int vector;
+	SDL_Surface* texture;
+	SDL_Surface* rolling_tex;
+	SDL_Surface* falling_tex;
+	struct BarrelAnimations animations;
+	Animation* current_animation;
+
 	void load_barrel_graphics();
 };
 

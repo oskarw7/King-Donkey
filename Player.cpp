@@ -136,7 +136,12 @@ void Player::load_player_graphics() {
 	animations.jump_right = new Animation(jump_right_tex, PLAYER_WIDTH, 0.5);
 }
 
-void Player::draw(double time) {
+void Player::draw(double time, Map* map) {
+	for (int i = 0; i < map->tiles.get_size(); i++) {
+		if (isOn(map->tiles.get(i))) {
+			
+		}
+	}
 	current_animation->draw_frame(screen, x, y, time);
 }
 

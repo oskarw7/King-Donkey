@@ -63,12 +63,19 @@ void Barrel::load_barrel_graphics() {
 	animations.falling = new Animation(falling_tex, HORIZONTAL_BARREL, 0.25);
 }
 
-void Barrel::draw(double time) {
+void Barrel::draw(double time, Map* map) {
+	for (int i = 0; i < map->tiles.get_size(); i++) {
+		if (isOn(map->tiles.get(i))) {
+			y = map->tiles.get(i)->get_y() - BARREL_HEIGHT;
+		}
+	}
 	current_animation->draw_frame(screen, x, y, time);
 }
 
 Barrel::~Barrel() {
 	delete jump_hitbox;
+	delete animations.falling;
+	delete animations.rolling;
 	delete current_animation;
 	SDL_FreeSurface(texture);
 }
