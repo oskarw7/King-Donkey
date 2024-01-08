@@ -11,7 +11,7 @@ public:
 	void add(Barrel* object);
 	int get_size();
 	Barrel* get(int i);
-	void remove(Barrel* object);
+	void remove_first();
 	~BarrelList();
 private:
 	int size;

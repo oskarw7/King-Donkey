@@ -29,6 +29,7 @@ public:
 	int isShown;
 	int start_time;
 	SDL_Surface* current_score_plate;
+	~ScorePlate();
 private:
 	SDL_Surface* screen;
 };

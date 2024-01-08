@@ -264,12 +264,12 @@ void Game::render() {
 	score_plate->check_draw(player->get_x(), player->get_y(), worldTime);
 
 	for (int i = 0; i < barrels.get_size(); i++) {
-		barrels.get(i)->draw(worldTime);
+		barrels.get(i)->draw(worldTime, map);
 	}
 
 	donkey_kong->draw(worldTime);
 
-	player->draw(worldTime);
+	player->draw(worldTime, map);
 
 	if (game_paused) {
 		SDL_FillRect(screen, NULL, czerwony);
@@ -307,6 +307,12 @@ void Game::update(double delta) {
 		else if (player->on_ladder(map) && player->current_animation == player->animations.climb) //wspina sie dalej na szczycie drabiny, tylko przy przytrzymaniu
 			player->current_animation = player->animations.steady_climb;
 	}
+	if (player->isJumping) {
+		if (player->current_animation == player->animations.run_left || player->current_animation == player->animations.stand_left)
+			player->current_animation = player->animations.jump_left;
+		else if (player->current_animation == player->animations.run_right || player->current_animation == player->animations.stand_right)
+			player->current_animation = player->animations.jump_right;
+	}
 
 	int mx = 0, my = 0;
 	if (pk.up) {
@@ -325,17 +331,19 @@ void Game::update(double delta) {
 	else if (pk.left) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
 			mx -= player->velocity_x * delta;
-			player->current_animation = player->animations.run_left;
+			if(!player->isJumping)
+				player->current_animation = player->animations.run_left;
 		}
 	}
 	else if (pk.right) {
 		if (!player->on_ladder(map) || player->on_ground(map) || player->above_ladder(map)) {
 			mx += player->velocity_x * delta;
-			player->current_animation = player->animations.run_right;
+			if(!player->isJumping)
+				player->current_animation = player->animations.run_right;
 		}
 	}
 	if (pk.space) {
-		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) { //animacja skoku
+		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) {
 			//my -= JUMP_FORCE * GRAVITY * delta;
 			player->isJumping = 1;
 			player->velocity_y = -JUMP_VELOCITY;
@@ -351,7 +359,7 @@ void Game::update(double delta) {
 	for (int i = 0; i < barrels.get_size(); i++) {
 		barrels.get(i)->update(map, delta);
 		if (barrels.get(i)->isOut()) {
-			//barrels.remove(barrels.get(i));
+			//barrels.remove_first();
 		}
 	}
 

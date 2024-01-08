@@ -6,18 +6,21 @@ BarrelList::BarrelList() {
 }
 
 void BarrelList::add(Barrel* barrel) {
-	Barrel** barrels_ext = new Barrel * [size + 1];
+	Barrel** barrels_extended = new Barrel * [size + 1];
 	for (int i = 0; i < size; i++) {
-		barrels_ext[i] = barrels[i];
+		barrels_extended[i] = barrels[i];
 	}
-	barrels_ext[size] = barrel;
+	barrels_extended[size] = barrel;
 	size++;
 	delete[] barrels;
-	barrels = barrels_ext;
+	barrels = barrels_extended;
 }
 
-void BarrelList::remove(Barrel * barrel) { //przesunac elementy o jeden do tylu
-	delete[] barrel;
+void BarrelList::remove_first() { //przesunac elementy o jeden do tylu
+	delete barrels[0];
+	for (int i = 0; i < size - 1; i++) {
+		barrels[i] = barrels[i + 1];
+	}
 	size--;
 
 }
