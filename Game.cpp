@@ -5,9 +5,9 @@ Game::Game() {
 	load_graphics();
 	SDL_ShowCursor(SDL_DISABLE);
 
-	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT, screen);
+	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT-2, screen);
 
-	map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+	map = new Map(MAP1_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 
 	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 
@@ -67,22 +67,29 @@ void Game::load_graphics() {
 	floor_tex = SDL_LoadBMP(FLOOR_PATH);
 	if (floor_tex == NULL) {
 		load_error(floor_tex, FLOOR_PATH);
-	}
+	};
+	floor2_tex = SDL_LoadBMP(FLOOR2_PATH);
+	if (floor2_tex == NULL) {
+		load_error(floor2_tex, FLOOR2_PATH);
+	};
+	floor3_tex = SDL_LoadBMP(FLOOR3_PATH);
+	if (floor3_tex == NULL) {
+		load_error(floor3_tex, FLOOR3_PATH);
+	};
 
 	ladder_tex = SDL_LoadBMP(LADDER_PATH);
 	if (ladder_tex == NULL) {
 		load_error(ladder_tex, LADDER_PATH);
-	}
+	};
 
 	barrel_tex = SDL_LoadBMP(BARREL_PATH);
 	if (barrel_tex == NULL) {
 		load_error(barrel_tex, BARREL_PATH);
-	}
-
+	};
 	standing_barrel_tex = SDL_LoadBMP(STANDING_BARREL_PATH);
 	if (standing_barrel_tex == NULL) {
 		load_error(standing_barrel_tex, STANDING_BARREL_PATH);
-	}
+	};
 
 	princess_tex = SDL_LoadBMP(PRINCESS_PATH);
 	if (princess_tex == NULL) {
@@ -108,7 +115,6 @@ void Game::load_graphics() {
 	if (plus100_tex == NULL) {
 		load_error(plus100_tex, PLUS100_PATH);
 	};
-
 	plus300_tex = SDL_LoadBMP(PLUS300_PATH);
 	if (plus300_tex == NULL) {
 		load_error(plus300_tex, PLUS300_PATH);
@@ -117,11 +123,21 @@ void Game::load_graphics() {
 
 void Game::load_error(SDL_Surface* surface, char* path) {
 	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
-	SDL_FreeSurface(surface);
 	SDL_FreeSurface(screen);
+	SDL_FreeSurface(charset);
+	SDL_FreeSurface(floor_tex);
+	SDL_FreeSurface(ladder_tex);
+	SDL_FreeSurface(barrel_tex);
+	SDL_FreeSurface(standing_barrel_tex);
+	SDL_FreeSurface(princess_tex);
+	SDL_FreeSurface(trophy_tex);
+	SDL_FreeSurface(heart_tex);
+	SDL_FreeSurface(donkey_kong_tex);
+
 	SDL_DestroyTexture(scrtex);
-	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+
 	SDL_Quit();
 	exit(1);
 }
@@ -136,16 +152,11 @@ void Game::start() {
 	worldTime = 0;
 
 	while (!quit) {
-
 		manage_time(&delta, &t1, &t2, &worldTime, &fpsTimer, &fps, &frames);
-
 		render();
-
 		if (game_started) {
 			update(delta);
 		}
-
-		// obs³uga zdarzeñ
 		SDL_Keycode key;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -172,18 +183,22 @@ void Game::start() {
 				else if (key == SDLK_ESCAPE) {
 					quit = 1;
 				}
-				else if (key == SDLK_7) {
-					change_map();
+				else if (key == SDLK_1) {
+					change_map(1);
+				}
+				else if (key == SDLK_2) {
+					change_map(2);
+				}
+				else if (key == SDLK_3) {
+					change_map(3);
 				}
 				else if (key == SDLK_c && game_paused) {
 					game_paused = 0;
 					game_started = 1;
 				}
 				break;
-
 			case SDL_KEYUP:
 				key = event.key.keysym.sym;
-
 				if (key == SDLK_UP) {
 					pk.up = 0;
 				}
@@ -210,9 +225,9 @@ void Game::start() {
 	stop();
 }
 
+//oblicza i zwraca czas oraz ilosc klatek na sekunde
 void Game::manage_time(double* delta, double* t1, double *t2, double* worldTime, double* fpsTimer, double* fps, int* frames) {
-	// w tym momencie t2-t1 to czas w milisekundach,
-	// jaki uplyna³ od ostatniego narysowania ekranu
+	// w tym momencie t2-t1 to czas w milisekundach, jaki uplyna³ od ostatniego narysowania ekranu
 	// delta to ten sam czas w sekundach
 	*t2 = SDL_GetTicks();
 	*delta = (*t2 - *t1) * 0.001;
@@ -230,15 +245,14 @@ void Game::manage_time(double* delta, double* t1, double *t2, double* worldTime,
 	};
 }
 
+//rysowanie obiektow na ekranie
 void Game::render() {
-	
 	char text[128];
 	int czarny = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
 	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
 
-	// tekst informacyjny
 	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, czerwony, czarny);
 	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, czerwony, niebieski);
 
@@ -246,14 +260,13 @@ void Game::render() {
 	if (!game_started) {
 		second_bind = ", N - new game";
 	}
-
 	sprintf(text, "ESC - quit%s", second_bind);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
 	sprintf(text, "Gametime: %.1lf s", worldTime);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
 
-	sprintf(text, "Implemented points:");
+	sprintf(text, "Implemented points: 1, 2, 3, 4, A, B, C, D*, E, F");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
 
 	sprintf(text, "Score: %d", player->score);
@@ -262,13 +275,10 @@ void Game::render() {
 	map->draw();
 	draw_lives();
 	score_plate->check_draw(player->get_x(), player->get_y(), worldTime);
-
 	for (int i = 0; i < barrels.get_size(); i++) {
 		barrels.get(i)->draw(worldTime, map);
 	}
-
 	donkey_kong->draw(worldTime);
-
 	player->draw(worldTime, map);
 
 	if (game_paused) {
@@ -288,32 +298,13 @@ void Game::render() {
 	SDL_RenderPresent(renderer);
 }
 
-
+//aktualizacja fizyki obiektow
 void Game::update(double delta) {
 	players_gravity(delta);
-	
 	for (int i = 0; i < barrels.get_size(); i++)
 		barrels.get(i)->barrel_gravity(map, delta);
 
-	if (!pk.up && !pk.down && !pk.left && !pk.right && !pk.space) {
-		if (player->current_animation == player->animations.jump_left || player->current_animation == player->animations.run_left) {
-			player->current_animation = player->animations.stand_left;
-		}
-		else if (player->current_animation == player->animations.jump_right || player->current_animation == player->animations.run_right) {
-			player->current_animation = player->animations.stand_right;
-		}
-		else if (player->above_ladder(map) && player->current_animation == player->animations.climb)
-			player->current_animation = player->animations.back;
-		else if (player->on_ladder(map) && player->current_animation == player->animations.climb) //wspina sie dalej na szczycie drabiny, tylko przy przytrzymaniu
-			player->current_animation = player->animations.steady_climb;
-	}
-	if (player->isJumping) {
-		if (player->current_animation == player->animations.run_left || player->current_animation == player->animations.stand_left)
-			player->current_animation = player->animations.jump_left;
-		else if (player->current_animation == player->animations.run_right || player->current_animation == player->animations.stand_right)
-			player->current_animation = player->animations.jump_right;
-	}
-
+	check_static_animations();
 	double mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
@@ -343,8 +334,7 @@ void Game::update(double delta) {
 		}
 	}
 	if (pk.space) {
-		if ((player->on_ground(map) && !player->on_ladder(map)) || ((player->on_upper_ladder(map) && player->touch_tile(map)))) {
-			//my -= JUMP_FORCE * GRAVITY * delta;
+		if ((player->on_ground(map) && !player->on_ladder(map))) {
 			player->isJumping = 1;
 			player->velocity_x = SPEED_X_COOLDOWN;
 			player->velocity_y = -JUMP_VELOCITY;
@@ -364,19 +354,37 @@ void Game::update(double delta) {
 	}
 
 	hit_barrel();
-
-	if (donkey_kong->get_frame_index() == 0 && !donkey_kong->hasThrown) {
+	if (donkey_kong->get_frame_index() == 0 && !donkey_kong->hasThrown) { //tworzy nowa beczke, powiazanie z animacja rzucania beczki
 		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 		donkey_kong->hasThrown = 1;
 	}
 	else if (donkey_kong->get_frame_index() == 2)
 		donkey_kong->hasThrown = 0;
-
 	check_trophy();
-
 	check_princess();
 }
 
+//ustawia animacje w przypadku braku interakcji gracza z klawiszami sterowania
+void Game::check_static_animations() {
+	if (!pk.up && !pk.down && !pk.left && !pk.right && !pk.space) {
+		if (player->current_animation == player->animations.jump_left || player->current_animation == player->animations.run_left)
+			player->current_animation = player->animations.stand_left;
+		else if (player->current_animation == player->animations.jump_right || player->current_animation == player->animations.run_right)
+			player->current_animation = player->animations.stand_right;
+		else if (player->above_ladder(map) && player->current_animation == player->animations.climb)
+			player->current_animation = player->animations.back;
+		else if (player->on_ladder(map) && player->current_animation == player->animations.climb)
+			player->current_animation = player->animations.steady_climb;
+	}
+	if (player->isJumping) {
+		if (player->current_animation == player->animations.run_left || player->current_animation == player->animations.stand_left)
+			player->current_animation = player->animations.jump_left;
+		else if (player->current_animation == player->animations.run_right || player->current_animation == player->animations.stand_right)
+			player->current_animation = player->animations.jump_right;
+	}
+}
+
+//odpowiada za przyspieszenie grawitacyjne gracza oraz zerowanie flag i predkosci w przypadku kolizji z podlozem
 void Game::players_gravity(double delta) {
 	if (player->on_ladder(map) || player->on_ground(map)) {
 		player->isJumping = 0;
@@ -384,11 +392,11 @@ void Game::players_gravity(double delta) {
 		player->velocity_y = JUMP_VELOCITY;
 		return;
 	}
-	//player->player_move(0, GRAVITY*delta);
 	player->velocity_y += GRAVITY * delta;
 	player->player_move(0, player->velocity_y * delta + GRAVITY * delta * delta);
 }
 
+//sprawdza kolizje gracza z beczkami oraz sprawdza, czy przeskoczyl beczke
 void Game::hit_barrel() {
 	for (int i = 0; i < barrels.get_size(); i++) {
 		Barrel* barrel = barrels.get(i);
@@ -400,7 +408,6 @@ void Game::hit_barrel() {
 			barrel->checkpoint3 = 1;
 
 		if (player->isCollision(barrel) && barrel->player_hit == 0) {
-			printf("HIT!");
 			player->lives--;
 			if (player->lives == 0)
 				stop();
@@ -419,31 +426,31 @@ void Game::hit_barrel() {
 	}
 }
 
-void Game::change_map() {
-	if (strcmp(map->map_path, MAP1_FILENAME)==0) {
-		map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+void Game::change_map(int map_number) {
+	if (map_number == 1) {
+		map = new Map(MAP1_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	}
-	else if (strcmp(map->map_path, MAP2_FILENAME) == 0) {
-		map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+	else if (map_number == 2) {
+		map = new Map(MAP2_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	}
-	else if (strcmp(map->map_path, MAP3_FILENAME) == 0) {
-		map = new Map(MAP1_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+	else if (map_number == 3) {
+		map = new Map(MAP3_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	}
 }
 
+//sprawdza, czy gracz dotarl do konca mapy i zmienia ja
 void Game::check_princess() {
 	if (player->isCollision(map->ending_area)) {
 		map->set_ending = 1;
 	}
 	if (player->isCollision(map->princess)) {
-		printf("WIN!");
 		if (first_completed==0 && strcmp(map->map_path, MAP1_FILENAME) == 0) {
-			map = new Map(MAP2_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+			map = new Map(MAP2_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 			player->score += 500;
 			first_completed = 1;
 		}
 		else if (first_completed == 1 && second_completed==0 && strcmp(map->map_path, MAP2_FILENAME) == 0) {
-			map = new Map(MAP3_FILENAME, screen, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+			map = new Map(MAP3_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 			player->score += 1000;
 			second_completed = 1;
 		}
@@ -456,6 +463,7 @@ void Game::check_princess() {
 	}
 }
 
+//sprawdza, czy gracz zdobyl trofeum
 void Game::check_trophy() {
 	if (player->isCollision(map->trophy) && !map->unset_trophy) {
 		player->score += 300;

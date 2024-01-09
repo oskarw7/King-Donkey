@@ -6,22 +6,22 @@
 #include "Map.h"
 #include "Animation.h"
 
-#define BARREL_WIDTH 22
-#define BARREL_HEIGHT 18
-#define HORIZONTAL_BARREL 27
-#define BARREL_VELOCITY_X 150.0
-#define BARREL_VELOCITY_Y 250.0
-#define BARREL_START_X 83
-#define BARREL_START_Y 189
-#define BARREL_FREQUENCY 3.0
-#define BARREL_TIME_MARGIN 0.01
-#define JUMP_HITBOX_OFFSET 40
+#define BARREL_WIDTH 22 //pixele
+#define BARREL_HEIGHT 18 //pixele
+#define HORIZONTAL_BARREL 27 //pixele
+#define BARREL_VELOCITY_X 200.0 //pixele/s
+#define BARREL_VELOCITY_Y 250.0 //pixele/s
+#define BARREL_START_X 83 //pixele
+#define BARREL_START_Y 189 //pixele
+#define BARREL_FREQUENCY 3.0 //s
+#define BARREL_TIME_MARGIN 0.01 //s
+#define JUMP_HITBOX_OFFSET 40 //pixele
 #define ROLLING_PATH "./Assets/barrel_sheet.bmp"
 #define FALLING_PATH "./Assets/spinning_barrels.bmp"
 
 struct BarrelAnimations {
-	Animation* rolling;
-	Animation* falling;
+	Animation* rolling; //ruch poziomy
+	Animation* falling; //ruch pionowy
 };
 
 class Barrel : public Object {

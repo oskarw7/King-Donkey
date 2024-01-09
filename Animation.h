@@ -9,18 +9,18 @@ extern "C" {
 
 class Animation {
 public:
-	Animation(SDL_Surface* sprite, int f_width, double time_interval);
+	Animation(SDL_Surface* sprite, int frame_width, double time_interval);
 	void draw_frame(SDL_Surface* screen, int x, int y, double time);
 	void next_frame();
 	int get_index() { return frame_index; };
 	~Animation();
 private:
-	int frame_index;
+	int frame_index; //obecny indeks klatki
 	int frame_count;
-	int f_width;
+	int frame_width;
 	SDL_Surface* sprite;
 	SDL_Rect rect;
-	double time_interval;
+	double time_interval; //czas trwania jednej klatki
 	double last_time;
 };
 

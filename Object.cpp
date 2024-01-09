@@ -8,6 +8,7 @@ Object::Object(double x, double y, double width, double height, SDL_Surface* scr
 	this->screen = screen;
 }
 
+//sprawdza kolizje
 int Object::isCollision(Object* a) {
 	if ((y < a->y + a->height) && (y + height > a->y) && (x < a->x + a->width) && (x + width > a->x)) {
 		return 1;
@@ -16,7 +17,7 @@ int Object::isCollision(Object* a) {
 }
 
 int Object::isQuarterCollision(Object* a) {
-	if ((y < a->y + a->height) && (y + height > a->y) && (x < a->x + a->width / 3) && (x + width / 3 > a->x)) {
+	if ((y < a->y + a->height) && (y + height > a->y) && (x < a->x + a->width / 4) && (x + width / 4 > a->x)) {
 		return 1;
 	}
 	return 0;
@@ -50,6 +51,12 @@ double Object::set_refresh_margin() {
 	else
 		return ceil(GRAVITY/100);
 }
+
+void Object::load_error(char* path) {
+	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
+	exit(1);
+}
+
 
 void Object::move(int mx, int my) {
 	x += mx;

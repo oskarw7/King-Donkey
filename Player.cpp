@@ -46,15 +46,6 @@ int Player::above_ladder(Map* map) {
 
 }
 
-int Player::on_upper_ladder(Map* map) {
-	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isQuarterCollision(map->upper_ladders.get(i))) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
 void Player::player_move(double mx, double my) {
 	x += mx;
 	y += my;
@@ -71,11 +62,6 @@ void Player::player_move(double mx, double my) {
 	else if (y > screen->h - FLOOR_SIZE - height) {
 		y = screen->h - FLOOR_SIZE - height;
 	}
-}
-
-void load_error(char* path) {
-	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
-	exit(1);
 }
 
 void Player::load_player_graphics() {
@@ -137,11 +123,6 @@ void Player::load_player_graphics() {
 }
 
 void Player::draw(double time, Map* map) {
-	/*for (int i = 0; i < map->tiles.get_size(); i++) { //nie dziala schodzenie po drabinie, ale wbija w ziemie
-		if (isOn(map->tiles.get(i))) {
-			y = map->tiles.get(i)->get_y() - PLAYER_HEIGHT;
-		}
-	}*/
 	current_animation->draw_frame(screen, (int)x, (int)y, time);
 }
 

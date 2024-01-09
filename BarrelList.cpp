@@ -16,7 +16,7 @@ void BarrelList::add(Barrel* barrel) {
 	barrels = barrels_extended;
 }
 
-void BarrelList::remove_first() { //przesunac elementy o jeden do tylu
+void BarrelList::remove_first() {
 	delete barrels[0];
 	for (int i = 0; i < size - 1; i++) {
 		barrels[i] = barrels[i + 1];

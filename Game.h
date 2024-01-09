@@ -21,15 +21,18 @@ extern "C" {
 #include "ScorePlate.h"
 
 #define TITLE "King Donkey"
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 750
+#define SCREEN_WIDTH 800 //pixele
+#define SCREEN_HEIGHT 750 //pixele
 
-#define HEART_WIDTH 25
-#define HEART_START_X 20
-#define HEART_START_Y 70
+#define HEART_WIDTH 25 //pixele
+#define HEART_START_X 20 //pixele
+#define HEART_START_Y 70 //pixele
 
+//sciezki do bitmap i map
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
+#define FLOOR2_PATH "./Assets/floor2.bmp"
+#define FLOOR3_PATH "./Assets/floor3.bmp"
 #define LADDER_PATH	"./Assets/ladder.bmp"
 #define BARREL_PATH "./Assets/barrel_sheet.bmp"
 #define STANDING_BARREL_PATH "./Assets/standing_barrel.bmp"
@@ -43,7 +46,8 @@ extern "C" {
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
 
-struct PressedKeys {
+//przechowuje informacje o wcisnietych klawiszach
+struct PressedKeys { 
 	int up;
 	int down;
 	int left;
@@ -66,6 +70,8 @@ private:
 	SDL_Surface* screen;
 	SDL_Surface* charset;
 	SDL_Surface* floor_tex;
+	SDL_Surface* floor2_tex;
+	SDL_Surface* floor3_tex;
 	SDL_Surface* ladder_tex;
 	SDL_Surface* barrel_tex;
 	SDL_Surface* standing_barrel_tex;
@@ -94,13 +100,14 @@ private:
 	void start();
 	void render();
 	void update(double delta);
+	void check_static_animations();
 	void stop();
 	void players_gravity(double delta);
 	void draw_map();
 	void draw_lives();
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
 	void hit_barrel();
-	void change_map();
+	void change_map(int map_number);
 	void check_princess();
 	void check_trophy();
 };

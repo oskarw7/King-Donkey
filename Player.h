@@ -71,7 +71,6 @@ public:
 	int on_ground(Map* map);
 	int touch_tile(Map* map);
 	int above_ladder(Map* map);
-	int on_upper_ladder(Map* map);
 
 	~Player();
 private:

@@ -10,6 +10,7 @@ int Barrel::on_ground(Map* map) {
 
 }
 
+//odpowiada za przyspieszenie grawitacyjne beczek i jej hitboxow w przypadku kolizji z podlozem
 void Barrel::barrel_gravity(Map* map, double delta) {
 	if (on_ground(map)) {
 		return;
@@ -19,10 +20,9 @@ void Barrel::barrel_gravity(Map* map, double delta) {
 	jump_hitbox1->move(0, velocity_y * delta);
 	jump_hitbox2->move(0, velocity_y * delta);
 	jump_hitbox3->move(0, velocity_y * delta);
-	//move(0, GRAVITY*delta);
-	//jump_hitbox->move(0, GRAVITY*delta);
 }
 
+//logika poruszania sie beczek
 void Barrel::update(Map* map, double delta) {
 	if (!on_ground(map) && !change_direction && x>=0) {
 		current_animation = animations.falling;
@@ -43,6 +43,7 @@ void Barrel::update(Map* map, double delta) {
 	}
 }
 
+//sprawwdza, czy beczka wypadla poza ekran
 int Barrel::isOut() {
 	if (x >= screen->w || x+height<=0) {
 		return 1;
@@ -53,17 +54,15 @@ int Barrel::isOut() {
 void Barrel::load_barrel_graphics() {
 	rolling_tex = SDL_LoadBMP(ROLLING_PATH);
 	if (rolling_tex == NULL) {
-		//load_error(rolling_tex, ROLLING_PATH);
-		exit(1);
+		load_error(ROLLING_PATH);
 	}
 
 	falling_tex = SDL_LoadBMP(FALLING_PATH);
 	if (falling_tex == NULL) {
-		//load_error(falling_tex, FALLING_PATH);
-		exit(1);
+		load_error(FALLING_PATH);
 	}
 
-	animations.rolling = new Animation(rolling_tex, BARREL_WIDTH, 0.25);
+	animations.rolling = new Animation(rolling_tex, BARREL_WIDTH, 0.1);
 	animations.falling = new Animation(falling_tex, HORIZONTAL_BARREL, 0.25);
 }
 

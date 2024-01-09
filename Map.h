@@ -9,24 +9,24 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAP_HEIGHT 21
-#define MAP_WIDTH 25
-#define MAP_PATH_LENGTH 17
-#define FLOOR_SIZE 32
-#define LADDER_SIZE 32
-#define PRINCESS_WIDTH 23
-#define PRINCESS_HEIGHT 32
-#define ENDING_AREA_WIDTH 32*3
-#define ENDING_AREA_HEIGHT PRINCESS_HEIGHT/20
-#define TROPHY_WIDTH 18
-#define TROPHY_HEIGHT 20
-#define STANDING_BARREL_WIDTH 19
-#define STANDING_BARREL_HEIGHT 29
+#define MAP_HEIGHT 21 //pixele
+#define MAP_WIDTH 25 //pixele
+#define MAP_PATH_LENGTH 17 
+#define FLOOR_SIZE 32 //pixele
+#define LADDER_SIZE 32 //pixele
+#define PRINCESS_WIDTH 23 //pixele
+#define PRINCESS_HEIGHT 32 //pixele
+#define ENDING_AREA_WIDTH 32*3 //pixele
+#define ENDING_AREA_HEIGHT PRINCESS_HEIGHT/20 //pixele
+#define TROPHY_WIDTH 18 //pixele
+#define TROPHY_HEIGHT 20 //pixele
+#define STANDING_BARREL_WIDTH 19 //pixele
+#define STANDING_BARREL_HEIGHT 29 //pixele
 
 
 class Map {
 public:
-	Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex, SDL_Surface* charset);
+	Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* floor2_tex, SDL_Surface* floor3_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex, SDL_Surface* charset);
 
 	char map_path[MAP_PATH_LENGTH];
 	int unset_trophy;
@@ -44,7 +44,7 @@ public:
 private:
 	SDL_Surface* screen;
 	SDL_Surface* charset;
-	void load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex);
+	void load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* floor2_tex, SDL_Surface* floor3_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex);
 
 };
 

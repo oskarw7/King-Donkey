@@ -1,30 +1,27 @@
 #include "Map.h"
 
-Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex, SDL_Surface* charset) {
+Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surface* floor2_tex, SDL_Surface* floor3_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex, SDL_Surface* charset) {
 	this->screen = screen;
 	this->charset = charset;
 	this->unset_trophy = 0;
 	this->set_ending = 0;
 	strcpy(this->map_path, filename);
-	load_map(filename, floor_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex);
+	load_map(filename, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex);
 }
 
-void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex) {
+//ladowanie mapy z pliku, liczba odpowiada za typ obiektu
+void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* floor2_tex, SDL_Surface* floor3_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex) {
 	FILE* f;
 	f = fopen(filename, "r");
-
-	if (f == NULL) {
+	if (f == NULL)
 		exit(1);
-	}
 
 	int map[MAP_HEIGHT][MAP_WIDTH];
-
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			fscanf(f, "%d ", &map[i][j]);
 		}
 	}
-
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		for (int j = 0; j < MAP_WIDTH; j++) {
 			switch (map[i][j]) {
@@ -46,6 +43,13 @@ void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* ladder_t
 				break;
 			case 6:
 				standing_barrels.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 7, STANDING_BARREL_WIDTH, STANDING_BARREL_HEIGHT, standing_barrel_tex, screen));
+				break;
+			case 7:
+				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor2_tex, screen));
+				break;
+			case 8:
+				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor3_tex, screen));
+				break;
 			}
 		}
 	}

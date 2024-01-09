@@ -5,10 +5,10 @@
 #include "Object.h"
 #include "Animation.h"
 
-#define KONG_START_X 17
-#define KONG_START_Y 147
-#define KONG_WIDTH 81
-#define KONG_HEIGHT 59
+#define KONG_START_X 17 //pixele
+#define KONG_START_Y 147 //pixele
+#define KONG_WIDTH 81 //pixele
+#define KONG_HEIGHT 59 //pixele
 
 class DonkeyKong : public Object {
 public:
@@ -20,7 +20,7 @@ public:
 	void draw(double time);
 	int get_frame_index();
 
-	int hasThrown;
+	int hasThrown; //flaga, czy rzucil beczke
 
 	~DonkeyKong();
 private:

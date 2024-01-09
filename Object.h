@@ -7,10 +7,11 @@ extern "C" {
 }
 
 #include "utils.h"
+#include <stdio.h>
 #include <math.h>
 
 
-#define	GRAVITY 450.0
+#define	GRAVITY 450.0 //pixele/s^2
 
 class Object {
 public:
@@ -34,6 +35,7 @@ protected:
 	double height;
 	int frame_width;
 	SDL_Surface* screen;
+	void load_error(char* path);
 private:
 	double set_refresh_margin();
 };
