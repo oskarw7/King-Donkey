@@ -44,7 +44,7 @@ void Barrel::update(Map* map, double delta) {
 }
 
 int Barrel::isOut() {
-	if (x >= screen->w || x<=0) {
+	if (x >= screen->w || x+height<=0) {
 		return 1;
 	}
 	return 0;
@@ -80,8 +80,4 @@ Barrel::~Barrel() {
 	delete jump_hitbox1;
 	delete jump_hitbox2;
 	delete jump_hitbox3;
-	delete animations.falling;
-	delete animations.rolling;
-	delete current_animation;
-	SDL_FreeSurface(texture);
 }

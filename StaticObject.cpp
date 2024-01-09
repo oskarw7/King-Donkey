@@ -5,5 +5,5 @@ void StaticObject::draw() {
 }
 
 StaticObject::~StaticObject() {
-	delete texture;
+	SDL_FreeSurface(texture);
 }

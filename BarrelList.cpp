@@ -22,7 +22,11 @@ void BarrelList::remove_first() { //przesunac elementy o jeden do tylu
 		barrels[i] = barrels[i + 1];
 	}
 	size--;
-
+	Barrel** barrels_decreased = new Barrel * [size];
+	for(int i=0; i<size; i++)
+		barrels_decreased[i] = barrels[i];
+	delete[] barrels;
+	barrels = barrels_decreased;
 }
 
 int BarrelList::get_size() {
@@ -35,6 +39,12 @@ Barrel* BarrelList::get(int i) {
 
 BarrelList::~BarrelList() {
 	for (int i = 0; i < size; i++) {
+		delete barrels[i]->animations.falling;
+		delete barrels[i]->animations.rolling;
+		delete barrels[i]->current_animation;
+		delete barrels[i]->texture;
+		delete barrels[i]->rolling_tex;
+		delete barrels[i]->falling_tex;
 		delete barrels[i];
 	}
 	delete[] barrels;

@@ -318,7 +318,7 @@ void Game::update(double delta) {
 	if (pk.up) {
 		if (player->on_ladder(map)) {
 			my -= player->climb_velocity * delta;
-			if(player->current_animation != player->animations.back)
+			if(player->current_animation != player->animations.back && !player->above_ladder(map))
 				player->current_animation = player->animations.climb;
 		}
 	}
@@ -356,11 +356,10 @@ void Game::update(double delta) {
 		}
 	}
 	player->player_move(mx, my);
-
 	for (int i = 0; i < barrels.get_size(); i++) {
 		barrels.get(i)->update(map, delta);
 		if (barrels.get(i)->isOut()) {
-			//barrels.remove_first();
+			barrels.remove_first();
 		}
 	}
 

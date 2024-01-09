@@ -52,9 +52,18 @@ public:
 
 	double velocity_x;
 	double velocity_y;
+
 	Object* jump_hitbox1;
 	Object* jump_hitbox2;
 	Object* jump_hitbox3;
+
+	SDL_Surface* texture;
+	SDL_Surface* rolling_tex;
+	SDL_Surface* falling_tex;
+
+	struct BarrelAnimations animations;
+	Animation* current_animation;
+
 	int checkpoint1;
 	int checkpoint2;
 	int checkpoint3;
@@ -65,11 +74,6 @@ public:
 private:
 	int change_direction;
 	int vector;
-	SDL_Surface* texture;
-	SDL_Surface* rolling_tex;
-	SDL_Surface* falling_tex;
-	struct BarrelAnimations animations;
-	Animation* current_animation;
 
 	void load_barrel_graphics();
 };

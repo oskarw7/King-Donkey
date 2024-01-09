@@ -57,5 +57,5 @@ void Object::move(int mx, int my) {
 }
 
 Object::~Object() {
-	delete screen;
+	SDL_FreeSurface(screen);
 }
