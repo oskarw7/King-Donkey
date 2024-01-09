@@ -12,6 +12,7 @@ extern "C" {
 #include "Map.h"
 #include "Animation.h"
 
+
 #define RUN_LEFT_PATH "./Assets/run_left.bmp"
 #define RUN_RIGHT_PATH "./Assets/run_right.bmp"
 #define CLIMB_PATH "./Assets/climb.bmp"
@@ -22,13 +23,13 @@ extern "C" {
 #define	JUMP_LEFT_PATH "./Assets/jump_left.bmp"
 #define	JUMP_RIGHT_PATH "./Assets/jump_right.bmp"
 
-#define PLAYER_WIDTH 28
-#define PLAYER_HEIGHT 30
-#define PLAYER_VELOCITY_X 200.0
-#define CLIMB_VELOCITY 200.0
+#define PLAYER_WIDTH 28.0
+#define PLAYER_HEIGHT 30.0
+#define PLAYER_VELOCITY_X 175.0
+#define CLIMB_VELOCITY 125.0
 #define PLAYER_LIVES 4
-#define JUMP_VELOCITY 225.0
-#define SPEED_X_COOLDOWN 125.0
+#define JUMP_VELOCITY 200.0
+#define SPEED_X_COOLDOWN 150.0
 
 struct PlayerAnimations {
 	Animation* run_left;
@@ -44,7 +45,7 @@ struct PlayerAnimations {
 
 class Player : public Object {
 public:
-	Player(int x, int y, SDL_Surface* screen) : Object(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, screen) {
+	Player(double x, double y, SDL_Surface* screen) : Object(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, screen) {
 		this->velocity_x = PLAYER_VELOCITY_X;
 		this->velocity_y = 0;
 		this->climb_velocity = CLIMB_VELOCITY;
@@ -64,7 +65,7 @@ public:
 	struct PlayerAnimations animations;
 	Animation* current_animation;
 
-	void player_move(int mx, int my);
+	void player_move(double mx, double my);
 	void draw(double time, Map* map);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);

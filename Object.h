@@ -10,16 +10,16 @@ extern "C" {
 #include <math.h>
 
 
-#define	GRAVITY 400.0
+#define	GRAVITY 450.0
 
 class Object {
 public:
 
-	Object(int x, int y, int width, int height, SDL_Surface* screen);
+	Object(double x, double y, double width, double height, SDL_Surface* screen);
 	int isCollision(Object* a);
 	int isQuarterCollision(Object* a);
 	int isOn(Object* a);
-	int isTierceOn(Object* a);
+	int isQuarterOn(Object* a);
 	int check_broad_area(Object* a);
 	void move(int mx, int my);
 	int get_x() { return x; };
@@ -28,10 +28,10 @@ public:
 	int get_width() { return width; };
 	virtual ~Object();
 protected:
-	int x;
-	int y;
-	int width;
-	int height;
+	double x;
+	double y;
+	double width;
+	double height;
 	int frame_width;
 	SDL_Surface* screen;
 private:

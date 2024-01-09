@@ -38,7 +38,7 @@ int Player::touch_tile(Map* map) {
 
 int Player::above_ladder(Map* map) {
 	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isTierceOn(map->upper_ladders.get(i))) {
+		if (isQuarterOn(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -55,7 +55,7 @@ int Player::on_upper_ladder(Map* map) {
 	return 0;
 }
 
-void Player::player_move(int mx, int my) {
+void Player::player_move(double mx, double my) {
 	x += mx;
 	y += my;
 	if (x < 0) {
@@ -137,12 +137,12 @@ void Player::load_player_graphics() {
 }
 
 void Player::draw(double time, Map* map) {
-	for (int i = 0; i < map->tiles.get_size(); i++) {
+	/*for (int i = 0; i < map->tiles.get_size(); i++) { //nie dziala schodzenie po drabinie, ale wbija w ziemie
 		if (isOn(map->tiles.get(i))) {
 			y = map->tiles.get(i)->get_y() - PLAYER_HEIGHT;
 		}
-	}
-	current_animation->draw_frame(screen, x, y, time);
+	}*/
+	current_animation->draw_frame(screen, (int)x, (int)y, time);
 }
 
 Player::~Player() {

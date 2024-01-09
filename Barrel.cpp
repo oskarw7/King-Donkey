@@ -16,7 +16,9 @@ void Barrel::barrel_gravity(Map* map, double delta) {
 	}
 	velocity_y += GRAVITY * delta;
 	move(0, velocity_y * delta);
-	jump_hitbox->move(0, velocity_y * delta);
+	jump_hitbox1->move(0, velocity_y * delta);
+	jump_hitbox2->move(0, velocity_y * delta);
+	jump_hitbox3->move(0, velocity_y * delta);
 	//move(0, GRAVITY*delta);
 	//jump_hitbox->move(0, GRAVITY*delta);
 }
@@ -35,7 +37,9 @@ void Barrel::update(Map* map, double delta) {
 
 	if (on_ground(map)) {
 		move(vector * BARREL_VELOCITY_X *delta, 0);
-		jump_hitbox->move(vector * BARREL_VELOCITY_X  * delta, 0);
+		jump_hitbox1->move(vector * BARREL_VELOCITY_X  * delta, 0);
+		jump_hitbox2->move(vector * BARREL_VELOCITY_X  * delta, 0);
+		jump_hitbox3->move(vector * BARREL_VELOCITY_X  * delta, 0);
 	}
 }
 
@@ -73,7 +77,9 @@ void Barrel::draw(double time, Map* map) {
 }
 
 Barrel::~Barrel() {
-	delete jump_hitbox;
+	delete jump_hitbox1;
+	delete jump_hitbox2;
+	delete jump_hitbox3;
 	delete animations.falling;
 	delete animations.rolling;
 	delete current_animation;

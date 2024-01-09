@@ -6,14 +6,14 @@ ObjectList::ObjectList() {
 }
 
 void ObjectList::add(StaticObject* object) {
-	StaticObject** objects_ext = new StaticObject*[size + 1];
+	StaticObject** objects_extended = new StaticObject*[size + 1];
 	for (int i = 0; i < size; i++) {
-		objects_ext[i] = objects[i];
+		objects_extended[i] = objects[i];
 	}
-	objects_ext[size] = object;
+	objects_extended[size] = object;
 	size++;
 	delete[] objects;
-	objects = objects_ext;
+	objects = objects_extended;
 }
 
 int ObjectList::get_size() {

@@ -314,7 +314,7 @@ void Game::update(double delta) {
 			player->current_animation = player->animations.jump_right;
 	}
 
-	int mx = 0, my = 0;
+	double mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
 			my -= player->climb_velocity * delta;
@@ -355,8 +355,6 @@ void Game::update(double delta) {
 				player->current_animation = player->animations.jump_right;
 		}
 	}
-	//std::cout << player->get_y() << std::endl;
-	std::cout << my << std::endl;
 	player->player_move(mx, my);
 
 	for (int i = 0; i < barrels.get_size(); i++) {
@@ -388,19 +386,20 @@ void Game::players_gravity(double delta) {
 		return;
 	}
 	//player->player_move(0, GRAVITY*delta);
-	//if ((!player->on_ladder(map) && !player->on_ground(map)) && player->velocity_y >= 0){
-		//std::cout << "GRAVITY!" << std::endl;
-		//player->velocity_y = JUMP_VELOCITY;
-		
-	//}
 	player->velocity_y += GRAVITY * delta;
 	player->player_move(0, player->velocity_y * delta + GRAVITY * delta * delta);
-
 }
 
 void Game::hit_barrel() {
 	for (int i = 0; i < barrels.get_size(); i++) {
 		Barrel* barrel = barrels.get(i);
+		if (player->isCollision(barrel->jump_hitbox1))
+			barrel->checkpoint1 = 1;
+		if (player->isCollision(barrel->jump_hitbox2))
+			barrel->checkpoint2 = 1;
+		if (player->isCollision(barrel->jump_hitbox3))
+			barrel->checkpoint3 = 1;
+
 		if (player->isCollision(barrel) && barrel->player_hit == 0) {
 			printf("HIT!");
 			player->lives--;
@@ -411,9 +410,10 @@ void Game::hit_barrel() {
 			game_paused = 1;
 			player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 		}
-		else if (player->isCollision(barrel->jump_hitbox) && barrel->player_hit == 0) {
+		else if (barrel->checkpoint1 && barrel->checkpoint2 && barrel->checkpoint3 && barrel->player_jump == 0 && barrel->player_hit == 0) {
 			player->score+=100;
-			barrel->player_hit = 1;
+			//barrel->player_hit = 1;
+			barrel->player_jump = 1;
 			score_plate->set_new_plate(plus100_tex, worldTime);
 		}
 		

@@ -1,5 +1,5 @@
 #include "Object.h"
-Object::Object(int x, int y, int width, int height, SDL_Surface* screen) {
+Object::Object(double x, double y, double width, double height, SDL_Surface* screen) {
 	this->x = x;
 	this->y = y;
 	this->width = width;
@@ -29,7 +29,7 @@ int Object::isOn(Object* a) {
 	return 0;
 }
 
-int Object::isTierceOn(Object* a) {
+int Object::isQuarterOn(Object* a) {
 	if (((y + height - a->y >= 0) && (y + height - a->y <= set_refresh_margin())) && (x < a->x + a->width / 4) && (x + width / 4 > a->x)) {
 		return 1;
 	}
