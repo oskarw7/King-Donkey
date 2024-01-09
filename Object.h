@@ -18,9 +18,9 @@ public:
 
 	Object(double x, double y, double width, double height, SDL_Surface* screen);
 	int isCollision(Object* a);
-	int isQuarterCollision(Object* a);
+	int isTierceCollision(Object* a);
 	int isOn(Object* a);
-	int isQuarterOn(Object* a);
+	int isTierceOn(Object* a);
 	int check_broad_area(Object* a);
 	void move(int mx, int my);
 	int get_x() { return x; };

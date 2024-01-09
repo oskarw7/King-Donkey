@@ -1,13 +1,14 @@
 #include "Player.h"
 
+//sprawdza, czy gracz jest na drabinie
 int Player::on_ladder(Map* map) {
 	for (int i = 0; i < map->ladders.get_size(); i++) {
-		if (isQuarterCollision(map->ladders.get(i))) {
+		if (isTierceCollision(map->ladders.get(i))) {
 			return 1;
 		}
 	}
 	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isQuarterCollision(map->upper_ladders.get(i))) {
+		if (isTierceCollision(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -15,7 +16,7 @@ int Player::on_ladder(Map* map) {
 	
 }
 
-
+//sprawdza, czy gracz jest na ziemi
 int Player::on_ground(Map* map) {
 	for (int i = 0; i < map->tiles.get_size(); i++) {
 		if (isOn(map->tiles.get(i))) { 
@@ -26,19 +27,10 @@ int Player::on_ground(Map* map) {
 
 }
 
-int Player::touch_tile(Map* map) {
-	for (int i = 0; i < map->tiles.get_size(); i++) {
-		if (isCollision(map->tiles.get(i))) {
-			return 1;
-		}
-	}
-	return 0;
-
-}
-
+//sprawdza, czy gracz jest nad drabina
 int Player::above_ladder(Map* map) {
 	for (int i = 0; i < map->upper_ladders.get_size(); i++) {
-		if (isQuarterOn(map->upper_ladders.get(i))) {
+		if (isTierceOn(map->upper_ladders.get(i))) {
 			return 1;
 		}
 	}
@@ -46,6 +38,7 @@ int Player::above_ladder(Map* map) {
 
 }
 
+//przesuwa gracza, sprawdza skrajne przypadki (wyjscie poza ekran)
 void Player::player_move(double mx, double my) {
 	x += mx;
 	y += my;

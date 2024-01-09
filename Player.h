@@ -12,7 +12,7 @@ extern "C" {
 #include "Map.h"
 #include "Animation.h"
 
-
+//sciezki do sprite sheet'ow
 #define RUN_LEFT_PATH "./Assets/run_left.bmp"
 #define RUN_RIGHT_PATH "./Assets/run_right.bmp"
 #define CLIMB_PATH "./Assets/climb.bmp"
@@ -23,14 +23,15 @@ extern "C" {
 #define	JUMP_LEFT_PATH "./Assets/jump_left.bmp"
 #define	JUMP_RIGHT_PATH "./Assets/jump_right.bmp"
 
-#define PLAYER_WIDTH 28.0
-#define PLAYER_HEIGHT 30.0
-#define PLAYER_VELOCITY_X 175.0
-#define CLIMB_VELOCITY 125.0
-#define PLAYER_LIVES 4
-#define JUMP_VELOCITY 200.0
-#define SPEED_X_COOLDOWN 150.0
+#define PLAYER_WIDTH 28.0 //pixele
+#define PLAYER_HEIGHT 30.0 //pixele
+#define PLAYER_VELOCITY_X 175.0 //pixele/s
+#define CLIMB_VELOCITY 125.0 //pixele/s
+#define PLAYER_LIVES 4 //ilosc zyc
+#define JUMP_VELOCITY 200.0 //pixele/s
+#define SPEED_X_COOLDOWN 150.0 //pixele/s
 
+//animacje gracza
 struct PlayerAnimations {
 	Animation* run_left;
 	Animation* run_right;
@@ -69,7 +70,6 @@ public:
 	void draw(double time, Map* map);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);
-	int touch_tile(Map* map);
 	int above_ladder(Map* map);
 
 	~Player();

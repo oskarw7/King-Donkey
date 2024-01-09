@@ -284,6 +284,8 @@ void Game::render() {
 	if (game_paused) {
 		SDL_FillRect(screen, NULL, czerwony);
 		DrawRectangle(screen, SCREEN_WIDTH/8, SCREEN_HEIGHT/3, 6*SCREEN_WIDTH/8, SCREEN_HEIGHT/3, czerwony, czarny);
+		sprintf(text, "Score: %d", player->score);
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 40, text, charset);
 		sprintf(text, "You have lost life. Do you want to continue?");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT/2 - 20, text, charset);
 		sprintf(text, "C - CONTINUE");

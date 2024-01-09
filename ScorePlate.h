@@ -11,9 +11,9 @@ extern "C" {
 
 #define	PLUS100_PATH "./Assets/plus100.bmp"
 #define	PLUS300_PATH "./Assets/plus300.bmp"
-#define SCORE_PLATE_WIDTH 48
-#define SCORE_PLATE_HEIGHT 15
-#define SCORE_PLATE_DURATION 2.0
+#define SCORE_PLATE_WIDTH 48 //pixele
+#define SCORE_PLATE_HEIGHT 15 //pixele
+#define SCORE_PLATE_DURATION 2.0 //sekundy
 
 class ScorePlate {
 public:
@@ -26,8 +26,8 @@ public:
 	void set_new_plate(SDL_Surface* texture, double time);
 	void check_draw(int x, int y, double time);
 
-	int isShown;
-	int start_time;
+	int isShown; //czy wyswietlac
+	int start_time; //czas rozpoczecia wyswietlania
 	SDL_Surface* current_score_plate;
 	~ScorePlate();
 private:
