@@ -22,7 +22,7 @@ public:
 	int isOn(Object* a);
 	int isTierceOn(Object* a);
 	int check_broad_area(Object* a);
-	void move(int mx, int my);
+	void move(double mx, double my);
 	int get_x() { return x; };
 	int get_y() { return y; };
 	int get_height() { return height; };

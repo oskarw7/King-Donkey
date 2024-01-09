@@ -9,7 +9,7 @@
 #define BARREL_WIDTH 22 //pixele
 #define BARREL_HEIGHT 18 //pixele
 #define HORIZONTAL_BARREL 27 //pixele
-#define BARREL_VELOCITY_X 200.0 //pixele/s
+#define BARREL_VELOCITY_X 150.0 //pixele/s
 #define BARREL_VELOCITY_Y 250.0 //pixele/s
 #define BARREL_START_X 83 //pixele
 #define BARREL_START_Y 189 //pixele
@@ -26,7 +26,7 @@ struct BarrelAnimations {
 
 class Barrel : public Object {
 public:
-	Barrel(int x, int y, int frame_width, SDL_Surface* screen) : Object(x, y, BARREL_WIDTH, BARREL_HEIGHT, screen) {
+	Barrel(double x, double y, double frame_width, SDL_Surface* screen) : Object(x, y, BARREL_WIDTH, BARREL_HEIGHT, screen) {
 		this->velocity_x = BARREL_VELOCITY_X;
 		this->velocity_y = BARREL_VELOCITY_Y;
 		this->change_direction = 0;

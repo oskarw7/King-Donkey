@@ -72,7 +72,7 @@ void Barrel::draw(double time, Map* map) {
 			y = map->tiles.get(i)->get_y() - BARREL_HEIGHT;
 		}
 	}
-	current_animation->draw_frame(screen, x, y, time);
+	current_animation->draw_frame(screen, (int)x, (int)y, time);
 }
 
 Barrel::~Barrel() {

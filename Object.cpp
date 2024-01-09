@@ -64,7 +64,7 @@ void Object::load_error(char* path) {
 }
 
 //przesuwa obiekt
-void Object::move(int mx, int my) {
+void Object::move(double mx, double my) {
 	x += mx;
 	y += my;
 }

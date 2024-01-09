@@ -7,7 +7,13 @@ Game::Game() {
 
 	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT-2, screen);
 
-	map = new Map(MAP1_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+	for(int i=0; i<3; i++)
+		maps_completed[i] = 0;
+	map1 = new Map(MAP1_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+	map2 = new Map(MAP2_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+	map3 = new Map(MAP3_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+
+	map = map1;
 
 	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 
@@ -430,37 +436,44 @@ void Game::hit_barrel() {
 
 void Game::change_map(int map_number) {
 	if (map_number == 1) {
-		map = new Map(MAP1_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+		map = map1;
 	}
 	else if (map_number == 2) {
-		map = new Map(MAP2_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+		map = map2;
 	}
 	else if (map_number == 3) {
-		map = new Map(MAP3_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+		map = map3;
 	}
 }
 
 //sprawdza, czy gracz dotarl do konca mapy i zmienia ja
-void Game::check_princess() {
+void Game::check_princess() { //TODO: sprawdzanie wykoniania wczeœniejszych map, 3! mozliwosci (oflaguj jako skonczona, zmien wskaznik na dostepna); zeruj dane beczek
 	if (player->isCollision(map->ending_area)) {
 		map->set_ending = 1;
 	}
 	if (player->isCollision(map->princess)) {
-		if (first_completed==0 && strcmp(map->map_path, MAP1_FILENAME) == 0) {
-			map = new Map(MAP2_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+		if (strcmp(map->map_path, MAP1_FILENAME) == 0) {
 			player->score += 500;
-			first_completed = 1;
+			maps_completed[0] = 1;
 		}
-		else if (first_completed == 1 && second_completed==0 && strcmp(map->map_path, MAP2_FILENAME) == 0) {
-			map = new Map(MAP3_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
+		else if (strcmp(map->map_path, MAP2_FILENAME) == 0) {
 			player->score += 1000;
-			second_completed = 1;
+			maps_completed[1] = 1;
 		}
-		else if (first_completed == 1 && second_completed == 1 && third_completed==0 && strcmp(map->map_path, MAP3_FILENAME) == 0) {
+		else if (strcmp(map->map_path, MAP3_FILENAME) == 0) {
 			player->score += 1500;
-			third_completed = 1;
-			stop();
+			maps_completed[2] = 1;
 		}
+		int isFinished = 1;
+		for (int i = 0; i < 3; i++) {
+			if (maps_completed[i] == 0) {
+				change_map(i + 1);
+				isFinished = 0;
+				break;
+			}
+		}
+		if (isFinished)
+			stop();
 		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 	}
 }

@@ -64,6 +64,7 @@ private:
 	double worldTime;
 	int game_started, game_paused;
 	int first_completed, second_completed, third_completed;
+	int maps_completed[3];
 
 	SDL_Event event;
 
@@ -88,6 +89,9 @@ private:
 
 	Player* player; 
 	Map* map;
+	Map* map1;
+	Map* map2;
+	Map* map3;
 	BarrelList barrels;
 	DonkeyKong* donkey_kong;
 	ScorePlate* score_plate;
