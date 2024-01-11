@@ -24,12 +24,18 @@ extern "C" {
 #define SCREEN_WIDTH 800 //pixele
 #define SCREEN_HEIGHT 750 //pixele
 
+#define MENU_BOX_WIDTH 300 //pixele
+#define MENU_BOX_HEIGHT 50 //pixele
+#define MENU_BOX_START_Y 300 //pixele
+#define MENU_BOX_OFFSET 70 //pixele
+
 #define HEART_WIDTH 25 //pixele
 #define HEART_START_X 20 //pixele
 #define HEART_START_Y 70 //pixele
 
 //sciezki do bitmap i map
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
+#define LOGO_PATH "./Assets/logo.bmp"
 #define FLOOR_PATH "./Assets/floor.bmp"
 #define FLOOR2_PATH "./Assets/floor2.bmp"
 #define FLOOR3_PATH "./Assets/floor3.bmp"
@@ -53,20 +59,37 @@ struct PressedKeys {
 	int space;
 };
 
+struct MenuKeys {
+	int scroll_up;
+	int scroll_down;
+	int enter;
+	int index;
+};
+
+struct Colors {
+	int black;
+	int green;
+	int red;
+	int blue;
+};
+
 class Game {
 public:
 	Game();
 
 private:
+	//flagi
 	int quit;
-	double worldTime;
-	int game_started, game_paused;
+	int game_started, game_paused, menu, map_mode, scoreboard_mode;
 	int maps_completed[3];
+	//czas gry od utworzenia nowej gry
+	double worldTime;
 
 	SDL_Event event;
 
 	SDL_Surface* screen;
 	SDL_Surface* charset;
+	SDL_Surface* logo_tex;
 	SDL_Surface* floor_tex;
 	SDL_Surface* floor2_tex;
 	SDL_Surface* floor3_tex;
@@ -94,13 +117,16 @@ private:
 	ScorePlate* score_plate;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
+	struct MenuKeys mk = { 0, 0, 0, 1 };
 
 	void init_screen();
 	void load_graphics();
 	void load_error(SDL_Surface* surface, char* path);
 	void start();
 	void render();
+	void render_menu(Colors colors);
 	void update(double delta);
+	void handle_menu();
 	void check_static_animations();
 	void draw_lives();
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);

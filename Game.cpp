@@ -25,6 +25,9 @@ Game::Game() {
 
 	game_started = 0;
 	game_paused = 0;
+	menu = 1;
+	map_mode = 0;
+	scoreboard_mode = 0;
 
 	start();
 
@@ -65,6 +68,11 @@ void Game::load_graphics() {
 		load_error(charset, CHARSET_PATH);
 	};
 	SDL_SetColorKey(charset, true, 0x000000);
+
+	logo_tex = SDL_LoadBMP(LOGO_PATH);
+	if (logo_tex == NULL) {
+		load_error(logo_tex, LOGO_PATH);
+	};
 
 	floor_tex = SDL_LoadBMP(FLOOR_PATH);
 	if (floor_tex == NULL) {
@@ -127,6 +135,7 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
 	SDL_FreeSurface(screen);
 	SDL_FreeSurface(charset);
+	SDL_FreeSurface(logo_tex);
 	SDL_FreeSurface(floor_tex);
 	SDL_FreeSurface(ladder_tex);
 	SDL_FreeSurface(barrel_tex);
@@ -159,6 +168,8 @@ void Game::start() {
 		if (game_started) {
 			update(delta);
 		}
+		if (menu)
+			handle_menu();
 		SDL_Keycode key;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -166,9 +177,11 @@ void Game::start() {
 				key = event.key.keysym.sym;
 				if (key == SDLK_UP) {
 					pk.up = 1;
+					mk.scroll_up = 1;
 				}
 				else if (key == SDLK_DOWN) {
 					pk.down = 1;
+					mk.scroll_down = 1;
 				}
 				else if (key == SDLK_LEFT) {
 					pk.left = 1;
@@ -179,24 +192,34 @@ void Game::start() {
 				else if (key == SDLK_SPACE) {
 					pk.space = 1;
 				} 
+				else if (key == SDLK_RETURN) {
+					mk.enter = 1;
+				}
+				else if ((scoreboard_mode || map_mode || game_paused) && key == SDLK_q) { //zrestartowac gre po wyjsciu do menu
+					scoreboard_mode = 0;
+					map_mode = 0;
+					game_paused = 0;
+					menu = 1;
+				}
 				else if (key == SDLK_n) {
+					map_mode = 0;
 					game_started = 1;
 				}
-				else if (key == SDLK_ESCAPE) {
-					quit = 1;
-				}
-				else if (key == SDLK_1) {
+				else if (map_mode && key == SDLK_1) {
 					change_map(1);
 				}
-				else if (key == SDLK_2) {
+				else if (map_mode && key == SDLK_2) {
 					change_map(2);
 				}
-				else if (key == SDLK_3) {
+				else if (map_mode && key == SDLK_3) {
 					change_map(3);
 				}
 				else if (key == SDLK_c && game_paused) {
 					game_paused = 0;
 					game_started = 1;
+				}
+				else if (key == SDLK_ESCAPE) {
+					quit = 1;
 				}
 				break;
 			case SDL_KEYUP:
@@ -247,53 +270,92 @@ void Game::manage_time(double* delta, double* t1, double *t2, double* worldTime,
 	};
 }
 
+void Game::render_menu(Colors colors) {
+	char text[128];
+	DrawSurface(screen, logo_tex, screen->w / 2, screen->h / 2 - 175);
+	sprintf(text, "DISCLAIMER: This project was made for educational purposes only.");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 20, text, charset);
+	sprintf(text, "I undertake not to benefit from it financially and post it online.");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 40, text, charset);
+	sprintf(text, "(Dear Nintendo, don't sue me, please)");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 60, text, charset);
+	DrawRectangle(screen, screen->w / 2 - MENU_BOX_WIDTH / 2, MENU_BOX_START_Y + mk.index * MENU_BOX_OFFSET, MENU_BOX_WIDTH, MENU_BOX_HEIGHT, colors.blue, colors.blue);
+	sprintf(text, "CHOOSE MAP");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, MENU_BOX_START_Y + MENU_BOX_OFFSET + MENU_BOX_HEIGHT / 2, text, charset);
+	sprintf(text, "SCOREBOARD");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, MENU_BOX_START_Y + 2 * MENU_BOX_OFFSET + MENU_BOX_HEIGHT / 2, text, charset);
+	sprintf(text, "QUIT");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, MENU_BOX_START_Y + 3 * MENU_BOX_OFFSET + MENU_BOX_HEIGHT / 2, text, charset);
+	sprintf(text, "ENTER - Choose option");
+	DrawString(screen, 20, screen->h - 70, text, charset);
+	sprintf(text, "\030 - Scroll up");
+	DrawString(screen, 20, screen->h - 50, text, charset);
+	sprintf(text, "\031 - Scroll down");
+	DrawString(screen, 20, screen->h - 30, text, charset);
+}
+
+void draw_pause_screen(Player* player, SDL_Surface* screen, SDL_Surface* charset, Colors colors) {
+	char text[128];
+	SDL_FillRect(screen, NULL, colors.red);
+	DrawRectangle(screen, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 3, 6 * SCREEN_WIDTH / 8, SCREEN_HEIGHT / 3, colors.red, colors.black);
+	sprintf(text, "Score: %d", player->score);
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 40, text, charset);
+	sprintf(text, "You have lost life. Do you want to continue?");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 20, text, charset);
+	sprintf(text, "C - CONTINUE");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2, text, charset);
+	sprintf(text, "ESC - QUIT");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 20, text, charset);
+}
+
 //rysowanie obiektow na ekranie
 void Game::render() {
 	char text[128];
-	int czarny = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
-	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
-	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
-	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
+	struct Colors colors;
+	colors.black = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
+	colors.green = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
+	colors.red = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
+	colors.blue = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
 
-	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, czerwony, czarny);
-	DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, czerwony, niebieski);
+	DrawRectangle(screen, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, colors.red, colors.black);
+	if (!menu) {
+		DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, colors.red, colors.blue);
 
-	char* second_bind = "";
-	if (!game_started) {
-		second_bind = ", N - new game";
-	}
-	sprintf(text, "ESC - quit%s", second_bind);
-	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
+		char* second_bind = "";
+		if (!game_started) {
+			second_bind = ", Q - return to main menu, N - new game";
+		}
+		sprintf(text, "ESC - quit%s", second_bind);
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
-	sprintf(text, "Gametime: %.1lf s", worldTime);
-	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
+		sprintf(text, "Gametime: %.1lf s", worldTime);
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
 
-	sprintf(text, "Implemented points: 1, 2, 3, 4, A, B, C, D*, E, F");
-	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
+		sprintf(text, "Implemented points: 1, 2, 3, 4, A, B, C, D*, E, F");
+		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
 
-	sprintf(text, "Score: %d", player->score);
-	DrawString(screen, screen->w - strlen(text) * 8 - 10, 60, text, charset);
-
-	map->draw();
-	draw_lives();
-	score_plate->check_draw(player->get_x(), player->get_y(), worldTime);
-	for (int i = 0; i < barrels.get_size(); i++) {
-		barrels.get(i)->draw(worldTime, map);
-	}
-	donkey_kong->draw(worldTime);
-	player->draw(worldTime, map);
-
-	if (game_paused) {
-		SDL_FillRect(screen, NULL, czerwony);
-		DrawRectangle(screen, SCREEN_WIDTH/8, SCREEN_HEIGHT/3, 6*SCREEN_WIDTH/8, SCREEN_HEIGHT/3, czerwony, czarny);
 		sprintf(text, "Score: %d", player->score);
-		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 40, text, charset);
-		sprintf(text, "You have lost life. Do you want to continue?");
-		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT/2 - 20, text, charset);
-		sprintf(text, "C - CONTINUE");
-		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2, text, charset);
-		sprintf(text, "ESC - QUIT");
-		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 20, text, charset);
+		DrawString(screen, screen->w - strlen(text) * 8 - 10, 60, text, charset);
+
+		map->draw();
+		draw_lives();
+		score_plate->check_draw(player->get_x(), player->get_y(), worldTime);
+		for (int i = 0; i < barrels.get_size(); i++) {
+			barrels.get(i)->draw(worldTime, map);
+		}
+		donkey_kong->draw(worldTime);
+		player->draw(worldTime, map);
+
+		if (game_paused) {
+			draw_pause_screen(player, screen, charset, colors);
+		}
+		if (scoreboard_mode) {
+			SDL_FillRect(screen, NULL, colors.black);
+			sprintf(text, "This option has not been implemented yet.");
+			DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, screen->h / 2, text, charset);
+		}
+	} else {
+		render_menu(colors);
 	}
 
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
@@ -401,8 +463,8 @@ void Game::hit_barrel() {
 
 		if (player->isCollision(barrel) && barrel->player_hit == 0) {
 			player->lives--;
-			if (player->lives == 0)
-				stop();
+			if (player->lives == 0) //zerowac dane gry
+				menu = 1;
 			barrel->player_hit = 1;
 			barrels.remove_all();
 			game_started = 0;
@@ -481,9 +543,41 @@ void Game::draw_lives() {
 	}
 }
 
+void Game::handle_menu() {
+	if (mk.scroll_up) {
+		if(mk.index==1)
+			mk.index = 3;
+		else
+			mk.index--;
+		mk.scroll_up = 0;
+	}
+	else if (mk.scroll_down) {
+		if (mk.index == 3)
+			mk.index = 1;
+		else
+			mk.index++;
+		mk.scroll_down = 0;
+	}
+	else if (mk.enter) {
+		if (mk.index == 1) {
+			menu = 0;
+			map_mode = 1;
+		}
+		else if (mk.index == 2) {
+			menu = 0;
+			scoreboard_mode=1;
+		}
+		else if (mk.index == 3) {
+			stop();
+		}
+		mk.enter = 0;
+	}
+}
+
 void Game::stop() {
 	SDL_FreeSurface(screen);
 	SDL_FreeSurface(charset);
+	SDL_FreeSurface(logo_tex);
 	SDL_FreeSurface(floor_tex);
 	SDL_FreeSurface(ladder_tex);
 	SDL_FreeSurface(barrel_tex);
