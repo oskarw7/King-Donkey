@@ -67,6 +67,7 @@ public:
 	Animation* current_animation;
 
 	void player_move(double mx, double my);
+	void players_gravity(double time, Map* map);
 	void draw(double time, Map* map);
 	int on_ladder(Map* map);
 	int on_ground(Map* map);

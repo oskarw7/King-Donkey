@@ -23,10 +23,6 @@ Game::Game() {
 
 	quit = 0;
 
-	first_completed = 0;
-	second_completed = 0;
-	third_completed = 0;
-
 	game_started = 0;
 	game_paused = 0;
 
@@ -308,7 +304,7 @@ void Game::render() {
 
 //aktualizacja fizyki obiektow
 void Game::update(double delta) {
-	players_gravity(delta);
+	player->players_gravity(delta, map);
 	for (int i = 0; i < barrels.get_size(); i++)
 		barrels.get(i)->barrel_gravity(map, delta);
 
@@ -369,7 +365,7 @@ void Game::update(double delta) {
 	else if (donkey_kong->get_frame_index() == 2)
 		donkey_kong->hasThrown = 0;
 	check_trophy();
-	check_princess();
+	check_ending();
 }
 
 //ustawia animacje w przypadku braku interakcji gracza z klawiszami sterowania
@@ -390,18 +386,6 @@ void Game::check_static_animations() {
 		else if (player->current_animation == player->animations.run_right || player->current_animation == player->animations.stand_right)
 			player->current_animation = player->animations.jump_right;
 	}
-}
-
-//odpowiada za przyspieszenie grawitacyjne gracza oraz zerowanie flag i predkosci w przypadku kolizji z podlozem
-void Game::players_gravity(double delta) {
-	if (player->on_ladder(map) || player->on_ground(map)) {
-		player->isJumping = 0;
-		player->velocity_x = PLAYER_VELOCITY_X;
-		player->velocity_y = JUMP_VELOCITY;
-		return;
-	}
-	player->velocity_y += GRAVITY * delta;
-	player->player_move(0, player->velocity_y * delta + GRAVITY * delta * delta);
 }
 
 //sprawdza kolizje gracza z beczkami oraz sprawdza, czy przeskoczyl beczke
@@ -447,7 +431,7 @@ void Game::change_map(int map_number) {
 }
 
 //sprawdza, czy gracz dotarl do konca mapy i zmienia ja
-void Game::check_princess() { //TODO: sprawdzanie wykoniania wczeœniejszych map, 3! mozliwosci (oflaguj jako skonczona, zmien wskaznik na dostepna); zeruj dane beczek
+void Game::check_ending() { //TODO: sprawdzanie wykoniania wczeœniejszych map, 3! mozliwosci (oflaguj jako skonczona, zmien wskaznik na dostepna); zeruj dane beczek
 	if (player->isCollision(map->ending_area)) {
 		map->set_ending = 1;
 	}
@@ -464,6 +448,7 @@ void Game::check_princess() { //TODO: sprawdzanie wykoniania wczeœniejszych map,
 			player->score += 1500;
 			maps_completed[2] = 1;
 		}
+
 		int isFinished = 1;
 		for (int i = 0; i < 3; i++) {
 			if (maps_completed[i] == 0) {
@@ -474,6 +459,7 @@ void Game::check_princess() { //TODO: sprawdzanie wykoniania wczeœniejszych map,
 		}
 		if (isFinished)
 			stop();
+
 		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 	}
 }

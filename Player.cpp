@@ -57,6 +57,18 @@ void Player::player_move(double mx, double my) {
 	}
 }
 
+//odpowiada za przyspieszenie grawitacyjne gracza oraz zerowanie flag i predkosci w przypadku kolizji z podlozem
+void Player::players_gravity(double time, Map* map) {
+	if (on_ladder(map) || on_ground(map)) {
+		isJumping = 0;
+		velocity_x = PLAYER_VELOCITY_X;
+		velocity_y = JUMP_VELOCITY;
+		return;
+	}
+	velocity_y += GRAVITY * time;
+	player_move(0, velocity_y * time + GRAVITY * time * time);
+}
+
 void Player::load_player_graphics() {
 	run_left_tex = SDL_LoadBMP(RUN_LEFT_PATH);
 	if (run_left_tex == NULL) {

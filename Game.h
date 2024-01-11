@@ -40,8 +40,6 @@ extern "C" {
 #define TROPHY_PATH "./Assets/trophy.bmp"
 #define HEART_PATH "./Assets/heart.bmp"
 #define DONKEY_KONG_PATH "./Assets/donkey_kong_sheet.bmp"
-#define	PLUS100_PATH "./Assets/plus100.bmp"
-#define	PLUS300_PATH "./Assets/plus300.bmp"
 #define MAP1_FILENAME "./Assets/map1.txt"
 #define MAP2_FILENAME "./Assets/map2.txt"
 #define MAP3_FILENAME "./Assets/map3.txt"
@@ -63,7 +61,6 @@ private:
 	int quit;
 	double worldTime;
 	int game_started, game_paused;
-	int first_completed, second_completed, third_completed;
 	int maps_completed[3];
 
 	SDL_Event event;
@@ -105,15 +102,13 @@ private:
 	void render();
 	void update(double delta);
 	void check_static_animations();
-	void stop();
-	void players_gravity(double delta);
-	void draw_map();
 	void draw_lives();
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
 	void hit_barrel();
 	void change_map(int map_number);
-	void check_princess();
+	void check_ending();
 	void check_trophy();
+	void stop();
 };
 
 
