@@ -404,6 +404,7 @@ void Game::hit_barrel() {
 			if (player->lives == 0)
 				stop();
 			barrel->player_hit = 1;
+			barrels.remove_all();
 			game_started = 0;
 			game_paused = 1;
 			player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
@@ -460,6 +461,7 @@ void Game::check_ending() { //TODO: sprawdzanie wykoniania wczeœniejszych map, 3
 		if (isFinished)
 			stop();
 
+		barrels.reset();
 		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 	}
 }

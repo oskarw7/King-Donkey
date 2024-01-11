@@ -29,6 +29,21 @@ void BarrelList::remove_first() {
 	barrels = barrels_decreased;
 }
 
+void BarrelList::remove_all() {
+	for (int i = 0; i < size; i++) {
+		delete barrels[i];
+	}
+	delete[] barrels;
+	size = 0;
+	barrels = new Barrel * [size];
+}
+
+void BarrelList::reset() {
+	for (int i = 0; i < size; i++) {
+		barrels[i]->reset();
+	}
+}
+
 int BarrelList::get_size() {
 	return size;
 }
