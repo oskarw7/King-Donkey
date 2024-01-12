@@ -13,6 +13,7 @@ public:
 	void draw_frame(SDL_Surface* screen, int x, int y, double time);
 	void next_frame();
 	int get_index() { return frame_index; };
+	void reset();
 	~Animation();
 private:
 	int frame_index; //obecny indeks klatki

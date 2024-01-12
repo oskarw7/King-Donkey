@@ -24,11 +24,11 @@ extern "C" {
 
 #define PLAYER_WIDTH 28.0			//pixele
 #define PLAYER_HEIGHT 30.0			//pixele
-#define PLAYER_VELOCITY_X 175.0		//pixele/s
+#define PLAYER_VELOCITY_X 150.0		//pixele/s
 #define CLIMB_VELOCITY 125.0		//pixele/s
 #define PLAYER_LIVES 4				//ilosc zyc
 #define JUMP_VELOCITY 200.0			//pixele/s
-#define SPEED_X_COOLDOWN 150.0		//pixele/s
+#define SPEED_X_COOLDOWN 140.0		//pixele/s
 
 //animacje gracza
 struct PlayerAnimations {

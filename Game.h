@@ -81,7 +81,6 @@ public:
 
 private:
 	//flagi
-	int quit;
 	int game_started, game_paused, menu, map_mode, scoreboard_mode;
 	int maps_completed[MAP_COUNT];
 	//czas gry od utworzenia nowej gry
@@ -118,10 +117,11 @@ private:
 	DonkeyKong* donkey_kong;
 	ScorePlate* score_plate;
 
-	struct PressedKeys pk = {0, 0, 0, 0, 0};
-	struct MenuKeys mk = { 0, 0, 0, 0, 1 };
+	struct PressedKeys pk;
+	struct MenuKeys mk;
 
 	void init_screen();
+	void init_keys();
 	void load_graphics();
 	void load_error(SDL_Surface* surface, char* path);
 	void start();

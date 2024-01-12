@@ -20,7 +20,7 @@ public:
 	void draw(double time);
 	int get_frame_index();
 	int hasThrown; //flaga, czy rzucil beczke
-
+	Animation* get_animation() { return animation; };
 	~DonkeyKong();
 private:
 	SDL_Surface* texture;

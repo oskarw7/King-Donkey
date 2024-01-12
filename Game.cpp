@@ -17,7 +17,8 @@ Game::Game() {
 	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
 	score_plate = new ScorePlate(screen);
 
-	quit = 0;
+	init_keys();
+
 	game_started = 0;
 	game_paused = 0;
 	menu = 1;
@@ -60,71 +61,57 @@ void Game::init_screen() {
 //laduje bitmapy
 void Game::load_graphics() {
 	charset = SDL_LoadBMP(CHARSET_PATH);
-	if (charset == NULL) {
+	if (charset == NULL)
 		load_error(charset, CHARSET_PATH);
-	};
 	SDL_SetColorKey(charset, true, 0x000000);
 
 	logo_tex = SDL_LoadBMP(LOGO_PATH);
-	if (logo_tex == NULL) {
+	if (logo_tex == NULL) 
 		load_error(logo_tex, LOGO_PATH);
-	};
 
 	floor_tex = SDL_LoadBMP(FLOOR_PATH);
-	if (floor_tex == NULL) {
+	if (floor_tex == NULL) 
 		load_error(floor_tex, FLOOR_PATH);
-	};
 	floor2_tex = SDL_LoadBMP(FLOOR2_PATH);
-	if (floor2_tex == NULL) {
+	if (floor2_tex == NULL)
 		load_error(floor2_tex, FLOOR2_PATH);
-	};
 	floor3_tex = SDL_LoadBMP(FLOOR3_PATH);
-	if (floor3_tex == NULL) {
+	if (floor3_tex == NULL) 
 		load_error(floor3_tex, FLOOR3_PATH);
-	};
 
 	ladder_tex = SDL_LoadBMP(LADDER_PATH);
-	if (ladder_tex == NULL) {
+	if (ladder_tex == NULL) 
 		load_error(ladder_tex, LADDER_PATH);
-	};
 
 	barrel_tex = SDL_LoadBMP(BARREL_PATH);
-	if (barrel_tex == NULL) {
+	if (barrel_tex == NULL)
 		load_error(barrel_tex, BARREL_PATH);
-	};
 	standing_barrel_tex = SDL_LoadBMP(STANDING_BARREL_PATH);
-	if (standing_barrel_tex == NULL) {
+	if (standing_barrel_tex == NULL) 
 		load_error(standing_barrel_tex, STANDING_BARREL_PATH);
-	};
 
 	princess_tex = SDL_LoadBMP(PRINCESS_PATH);
-	if (princess_tex == NULL) {
+	if (princess_tex == NULL) 
 		load_error(princess_tex, PRINCESS_PATH);
-	};
 
 	trophy_tex = SDL_LoadBMP(TROPHY_PATH);
-	if (trophy_tex == NULL) {
+	if (trophy_tex == NULL) 
 		load_error(trophy_tex, TROPHY_PATH);
-	};
 
 	heart_tex = SDL_LoadBMP(HEART_PATH);
-	if (heart_tex == NULL) {
+	if (heart_tex == NULL) 
 		load_error(heart_tex, HEART_PATH);
-	};
 
 	donkey_kong_tex = SDL_LoadBMP(DONKEY_KONG_PATH);
-	if (donkey_kong_tex == NULL) {
+	if (donkey_kong_tex == NULL) 
 		load_error(donkey_kong_tex, DONKEY_KONG_PATH);
-	};
 
 	plus100_tex = SDL_LoadBMP(PLUS100_PATH);
-	if (plus100_tex == NULL) {
+	if (plus100_tex == NULL) 
 		load_error(plus100_tex, PLUS100_PATH);
-	};
 	plus300_tex = SDL_LoadBMP(PLUS300_PATH);
-	if (plus300_tex == NULL) {
+	if (plus300_tex == NULL) 
 		load_error(plus300_tex, PLUS300_PATH);
-	};
 }
 
 //w przypadku bledu ladowania bitmapy
@@ -151,6 +138,7 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 }
 
 void Game::start() {
+	int quit = 0;
 	int frames = 0;
 	double t1 = SDL_GetTicks();
 	double t2;
@@ -162,9 +150,8 @@ void Game::start() {
 	while (!quit) {
 		manage_time(&delta, &t1, &t2, &worldTime, &fpsTimer, &fps, &frames);
 		render();
-		if (game_started) {
+		if (game_started)
 			update(delta);
-		}
 		if (menu)
 			handle_menu();
 		SDL_Keycode key;
@@ -180,18 +167,14 @@ void Game::start() {
 					pk.down = 1;
 					mk.scroll_down = 1;
 				}
-				else if (key == SDLK_LEFT) {
+				else if (key == SDLK_LEFT)
 					pk.left = 1;
-				}
-				else if (key == SDLK_RIGHT) {
+				else if (key == SDLK_RIGHT)
 					pk.right = 1;
-				}
-				else if (key == SDLK_SPACE) {
+				else if (key == SDLK_SPACE)
 					pk.space = 1;
-				} 
-				else if (key == SDLK_RETURN) {
+				else if (key == SDLK_RETURN)
 					mk.enter = 1;
-				}
 				else if ((scoreboard_mode || map_mode || game_paused) && key == SDLK_q) {
 					menu = 1;
 					mk.exit = 1;
@@ -200,40 +183,31 @@ void Game::start() {
 					map_mode = 0;
 					game_started = 1;
 				}
-				else if (map_mode && key == SDLK_1) {
+				else if (map_mode && key == SDLK_1)
 					change_map(1);
-				}
-				else if (map_mode && key == SDLK_2) {
+				else if (map_mode && key == SDLK_2)
 					change_map(2);
-				}
-				else if (map_mode && key == SDLK_3) {
+				else if (map_mode && key == SDLK_3)
 					change_map(3);
-				}
 				else if (key == SDLK_c && game_paused) {
 					game_paused = 0;
 					game_started = 1;
 				}
-				else if (key == SDLK_ESCAPE) {
+				else if (key == SDLK_ESCAPE)
 					quit = 1;
-				}
 				break;
 			case SDL_KEYUP:
 				key = event.key.keysym.sym;
-				if (key == SDLK_UP) {
+				if (key == SDLK_UP)
 					pk.up = 0;
-				}
-				else if (key == SDLK_DOWN) {
+				else if (key == SDLK_DOWN)
 					pk.down = 0;
-				}
-				else if (key == SDLK_LEFT) {
+				else if (key == SDLK_LEFT)
 					pk.left = 0;
-				}
-				else if (key == SDLK_RIGHT) {
+				else if (key == SDLK_RIGHT)
 					pk.right = 0;
-				}
-				else if (key == SDLK_SPACE) {
+				else if (key == SDLK_SPACE)
 					pk.space = 0;
-				}
 				break;
 			case SDL_QUIT:
 				quit = 1;
@@ -467,6 +441,7 @@ void Game::hit_barrel() {
 				game_paused = 1;
 			barrel->player_hit = 1;
 			barrels.remove_all();
+			donkey_kong->get_animation()->reset();
 			game_started = 0;
 			player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 		}
@@ -521,7 +496,8 @@ void Game::check_ending() {
 		if (isFinished)
 			stop();
 
-		barrels.reset();
+		barrels.remove_all();
+		donkey_kong->get_animation()->reset();
 		player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 	}
 }
@@ -539,6 +515,20 @@ void Game::draw_lives() {
 	for (int i = 0; i < player->lives; i++) {
 		DrawSurface(screen, heart_tex, i * (HEART_WIDTH+5) + HEART_START_X, HEART_START_Y);
 	}
+}
+
+void Game::init_keys() {
+	pk.up = 0;
+	pk.down = 0;
+	pk.left = 0;
+	pk.right = 0;
+	pk.space = 0;
+
+	mk.scroll_up = 0;
+	mk.scroll_down = 0;
+	mk.enter = 0;
+	mk.exit = 0;
+	mk.index = 1;
 }
 
 void Game::handle_menu() {

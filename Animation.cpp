@@ -28,6 +28,10 @@ void Animation::draw_frame(SDL_Surface* screen, int x, int y, double time) {
 
 }
 
+void Animation::reset() {
+	frame_index = 0;
+}
+
 Animation::~Animation() {
 	SDL_FreeSurface(sprite);
 }
