@@ -66,14 +66,6 @@ void Barrel::load_barrel_graphics() {
 	animations.falling = new Animation(falling_tex, HORIZONTAL_BARREL, 0.25);
 }
 
-void Barrel::reset() {
-	checkpoint1 = 0;
-	checkpoint2 = 0;
-	checkpoint3 = 0;
-	player_hit = 0;
-	player_jump = 0;
-}
-
 void Barrel::draw(double time, Map* map) {
 	for (int i = 0; i < map->tiles.get_size(); i++) {
 		if (check_broad_area(map->tiles.get(i))) {

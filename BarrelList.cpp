@@ -38,12 +38,6 @@ void BarrelList::remove_all() {
 	barrels = new Barrel * [size];
 }
 
-void BarrelList::reset() {
-	for (int i = 0; i < size; i++) {
-		barrels[i]->reset();
-	}
-}
-
 int BarrelList::get_size() {
 	return size;
 }

@@ -49,7 +49,6 @@ public:
 	void update(Map* map, double delta);
 	void barrel_gravity(Map* map, double delta);
 	int isOut();
-	void reset();
 
 	double velocity_x;
 	double velocity_y;
