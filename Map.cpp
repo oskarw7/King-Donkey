@@ -11,44 +11,48 @@ Map::Map(char* filename, SDL_Surface* screen, SDL_Surface* floor_tex, SDL_Surfac
 
 //ladowanie mapy z pliku, liczba odpowiada za typ obiektu
 void Map::load_map(char* filename, SDL_Surface* floor_tex, SDL_Surface* floor2_tex, SDL_Surface* floor3_tex, SDL_Surface* ladder_tex, SDL_Surface* trophy_tex, SDL_Surface* princess_tex, SDL_Surface* standing_barrel_tex) {
+	int map_width, map_height;
 	FILE* f;
 	f = fopen(filename, "r");
 	if (f == NULL)
 		exit(1);
-
-	int map[MAP_HEIGHT][MAP_WIDTH];
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+	fscanf(f, "%d %d ", &map_height, &map_width);
+	int** map = new int* [map_height];
+	for (int i = 0; i < map_height; i++) {
+		map[i] = new int[map_width];
+	};
+	for (int i = 0; i < map_height; i++) {
+		for (int j = 0; j < map_width; j++) {
 			fscanf(f, "%d ", &map[i][j]);
 		}
 	}
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		for (int j = 0; j < MAP_WIDTH; j++) {
+	for (int i = 0; i < map_height; i++) {
+		for (int j = 0; j < map_width; j++) {
 			switch (map[i][j]) {
 			case 1:
-				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor_tex, screen));
+				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor_tex, screen));
 				break;
 			case 2:
-				ladders.add(new StaticObject(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - MAP_HEIGHT * LADDER_SIZE), LADDER_SIZE, LADDER_SIZE, ladder_tex, screen));
+				ladders.add(new StaticObject(j * LADDER_SIZE, i * LADDER_SIZE + (screen->h - map_height * LADDER_SIZE), LADDER_SIZE, LADDER_SIZE, ladder_tex, screen));
 				break;
 			case 3:
-				upper_ladders.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), LADDER_SIZE, LADDER_SIZE, ladder_tex, screen));
+				upper_ladders.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE), LADDER_SIZE, LADDER_SIZE, ladder_tex, screen));
 				break;
 			case 4:
-				trophy = new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 5, TROPHY_WIDTH, TROPHY_HEIGHT, trophy_tex, screen);
+				trophy = new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE) + 5, TROPHY_WIDTH, TROPHY_HEIGHT, trophy_tex, screen);
 				break;
 			case 5:
-				princess = new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 5, PRINCESS_WIDTH, PRINCESS_HEIGHT, princess_tex, screen);
-				ending_area = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 5, ENDING_AREA_WIDTH, ENDING_AREA_HEIGHT, NULL);
+				princess = new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE) + 5, PRINCESS_WIDTH, PRINCESS_HEIGHT, princess_tex, screen);
+				ending_area = new Object(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE) + 5, ENDING_AREA_WIDTH, ENDING_AREA_HEIGHT, NULL);
 				break;
 			case 6:
-				standing_barrels.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE) + 7, STANDING_BARREL_WIDTH, STANDING_BARREL_HEIGHT, standing_barrel_tex, screen));
+				standing_barrels.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE) + 7, STANDING_BARREL_WIDTH, STANDING_BARREL_HEIGHT, standing_barrel_tex, screen));
 				break;
 			case 7:
-				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor2_tex, screen));
+				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor2_tex, screen));
 				break;
 			case 8:
-				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - MAP_HEIGHT * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor3_tex, screen));
+				tiles.add(new StaticObject(j * FLOOR_SIZE, i * FLOOR_SIZE + (screen->h - map_height * FLOOR_SIZE), FLOOR_SIZE, FLOOR_SIZE, floor3_tex, screen));
 				break;
 			}
 		}
@@ -79,6 +83,11 @@ void Map::draw() {
 		sprintf(text, "Congratulations! Come closer to the Princess.");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 70, text, charset);
 	}
+}
+
+void Map::reset() {
+	unset_trophy = 0;
+	set_ending = 0;
 }
 
 Map::~Map() {

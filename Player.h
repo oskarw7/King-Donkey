@@ -7,7 +7,6 @@ extern "C" {
 #include"./SDL2-2.0.10/include/SDL_main.h"
 }
 
-
 #include "Object.h"
 #include "Map.h"
 #include "Animation.h"
@@ -23,13 +22,13 @@ extern "C" {
 #define	JUMP_LEFT_PATH "./Assets/jump_left.bmp"
 #define	JUMP_RIGHT_PATH "./Assets/jump_right.bmp"
 
-#define PLAYER_WIDTH 28.0 //pixele
-#define PLAYER_HEIGHT 30.0 //pixele
-#define PLAYER_VELOCITY_X 175.0 //pixele/s
-#define CLIMB_VELOCITY 125.0 //pixele/s
-#define PLAYER_LIVES 4 //ilosc zyc
-#define JUMP_VELOCITY 200.0 //pixele/s
-#define SPEED_X_COOLDOWN 150.0 //pixele/s
+#define PLAYER_WIDTH 28.0			//pixele
+#define PLAYER_HEIGHT 30.0			//pixele
+#define PLAYER_VELOCITY_X 175.0		//pixele/s
+#define CLIMB_VELOCITY 125.0		//pixele/s
+#define PLAYER_LIVES 4				//ilosc zyc
+#define JUMP_VELOCITY 200.0			//pixele/s
+#define SPEED_X_COOLDOWN 150.0		//pixele/s
 
 //animacje gracza
 struct PlayerAnimations {

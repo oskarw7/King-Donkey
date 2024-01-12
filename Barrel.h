@@ -6,16 +6,16 @@
 #include "Map.h"
 #include "Animation.h"
 
-#define BARREL_WIDTH 22 //pixele
-#define BARREL_HEIGHT 18 //pixele
-#define HORIZONTAL_BARREL 27 //pixele
+#define BARREL_WIDTH 22			//pixele
+#define BARREL_HEIGHT 18		//pixele
+#define HORIZONTAL_BARREL 27	//pixele
 #define BARREL_VELOCITY_X 150.0 //pixele/s
 #define BARREL_VELOCITY_Y 250.0 //pixele/s
-#define BARREL_START_X 83 //pixele
-#define BARREL_START_Y 189 //pixele
-#define BARREL_FREQUENCY 3.0 //s
+#define BARREL_START_X 83		//pixele
+#define BARREL_START_Y 189		//pixele
+#define BARREL_FREQUENCY 3.0	//s
 #define BARREL_TIME_MARGIN 0.01 //s
-#define JUMP_HITBOX_OFFSET 40 //pixele
+#define JUMP_HITBOX_OFFSET 40	//pixele
 #define ROLLING_PATH "./Assets/barrel_sheet.bmp"
 #define FALLING_PATH "./Assets/spinning_barrels.bmp"
 

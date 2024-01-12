@@ -21,17 +21,18 @@ extern "C" {
 #include "ScorePlate.h"
 
 #define TITLE "King Donkey"
-#define SCREEN_WIDTH 800 //pixele
-#define SCREEN_HEIGHT 750 //pixele
+#define SCREEN_WIDTH 800		//pixele
+#define SCREEN_HEIGHT 750		//pixele
+#define MAP_COUNT 3
 
-#define MENU_BOX_WIDTH 300 //pixele
-#define MENU_BOX_HEIGHT 50 //pixele
-#define MENU_BOX_START_Y 300 //pixele
-#define MENU_BOX_OFFSET 70 //pixele
+#define MENU_BOX_WIDTH 300		//pixele
+#define MENU_BOX_HEIGHT 50		//pixele
+#define MENU_BOX_START_Y 300	//pixele
+#define MENU_BOX_OFFSET 70		//pixele
 
-#define HEART_WIDTH 25 //pixele
-#define HEART_START_X 20 //pixele
-#define HEART_START_Y 70 //pixele
+#define HEART_WIDTH 25			//pixele
+#define HEART_START_X 20		//pixele
+#define HEART_START_Y 70		//pixele
 
 //sciezki do bitmap i map
 #define CHARSET_PATH "./Assets/cs8x8.bmp"
@@ -63,6 +64,7 @@ struct MenuKeys {
 	int scroll_up;
 	int scroll_down;
 	int enter;
+	int exit;
 	int index;
 };
 
@@ -81,7 +83,7 @@ private:
 	//flagi
 	int quit;
 	int game_started, game_paused, menu, map_mode, scoreboard_mode;
-	int maps_completed[3];
+	int maps_completed[MAP_COUNT];
 	//czas gry od utworzenia nowej gry
 	double worldTime;
 
@@ -117,7 +119,7 @@ private:
 	ScorePlate* score_plate;
 
 	struct PressedKeys pk = {0, 0, 0, 0, 0};
-	struct MenuKeys mk = { 0, 0, 0, 1 };
+	struct MenuKeys mk = { 0, 0, 0, 0, 1 };
 
 	void init_screen();
 	void load_graphics();
@@ -134,6 +136,7 @@ private:
 	void change_map(int map_number);
 	void check_ending();
 	void check_trophy();
+	void reset_game_state();
 	void stop();
 };
 

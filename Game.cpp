@@ -7,22 +7,17 @@ Game::Game() {
 
 	player = new Player(SCREEN_WIDTH-PLAYER_WIDTH, SCREEN_HEIGHT-2*PLAYER_HEIGHT-2, screen);
 
-	for(int i=0; i<3; i++)
+	for(int i=0; i<MAP_COUNT; i++)
 		maps_completed[i] = 0;
 	map1 = new Map(MAP1_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	map2 = new Map(MAP2_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
 	map3 = new Map(MAP3_FILENAME, screen, floor_tex, floor2_tex, floor3_tex, ladder_tex, trophy_tex, princess_tex, standing_barrel_tex, charset);
-
 	map = map1;
 
-	barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
-
 	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
-
 	score_plate = new ScorePlate(screen);
 
 	quit = 0;
-
 	game_started = 0;
 	game_paused = 0;
 	menu = 1;
@@ -33,7 +28,7 @@ Game::Game() {
 
 }
 
-
+//generuje okno nowej gry
 void Game::init_screen() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		printf("SDL_Init error: %s\n", SDL_GetError());
@@ -62,6 +57,7 @@ void Game::init_screen() {
 		SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
+//laduje bitmapy
 void Game::load_graphics() {
 	charset = SDL_LoadBMP(CHARSET_PATH);
 	if (charset == NULL) {
@@ -131,6 +127,7 @@ void Game::load_graphics() {
 	};
 }
 
+//w przypadku bledu ladowania bitmapy
 void Game::load_error(SDL_Surface* surface, char* path) {
 	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
 	SDL_FreeSurface(screen);
@@ -195,13 +192,11 @@ void Game::start() {
 				else if (key == SDLK_RETURN) {
 					mk.enter = 1;
 				}
-				else if ((scoreboard_mode || map_mode || game_paused) && key == SDLK_q) { //zrestartowac gre po wyjsciu do menu
-					scoreboard_mode = 0;
-					map_mode = 0;
-					game_paused = 0;
+				else if ((scoreboard_mode || map_mode || game_paused) && key == SDLK_q) {
 					menu = 1;
+					mk.exit = 1;
 				}
-				else if (key == SDLK_n) {
+				else if (map_mode && key == SDLK_n) {
 					map_mode = 0;
 					game_started = 1;
 				}
@@ -304,8 +299,10 @@ void draw_pause_screen(Player* player, SDL_Surface* screen, SDL_Surface* charset
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 20, text, charset);
 	sprintf(text, "C - CONTINUE");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2, text, charset);
-	sprintf(text, "ESC - QUIT");
+	sprintf(text, "Q - RETURN TO MENU");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 20, text, charset);
+	sprintf(text, "ESC - QUIT");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 40, text, charset);
 }
 
 //rysowanie obiektow na ekranie
@@ -323,15 +320,15 @@ void Game::render() {
 
 		char* second_bind = "";
 		if (!game_started) {
-			second_bind = ", Q - return to main menu, N - new game";
+			second_bind = "1-3 - CHOOSE MAP  |  N - NEW GAME  |  Q - RETURN TO MENU  |  ";
 		}
-		sprintf(text, "ESC - quit%s", second_bind);
+		sprintf(text, "%sESC - QUIT", second_bind);
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
-		sprintf(text, "Gametime: %.1lf s", worldTime);
+		sprintf(text, "GAMETIME: %.1lf s", worldTime);
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
 
-		sprintf(text, "Implemented points: 1, 2, 3, 4, A, B, C, D*, E, F");
+		sprintf(text, "IMPLEMENTED POINTS: 1, 2, 3, 4, A, B, C, D, E, F, I");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
 
 		sprintf(text, "Score: %d", player->score);
@@ -351,13 +348,12 @@ void Game::render() {
 		}
 		if (scoreboard_mode) {
 			SDL_FillRect(screen, NULL, colors.black);
-			sprintf(text, "This option has not been implemented yet.");
+			sprintf(text, "This option has not been implemented yet. Q - RETURN TO MENU");
 			DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, screen->h / 2, text, charset);
 		}
 	} else {
 		render_menu(colors);
 	}
-
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
 	//		SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, scrtex, NULL, NULL);
@@ -420,11 +416,11 @@ void Game::update(double delta) {
 	}
 
 	hit_barrel();
-	if (donkey_kong->get_frame_index() == 0 && !donkey_kong->hasThrown) { //tworzy nowa beczke, powiazanie z animacja rzucania beczki
+	if (donkey_kong->get_frame_index() == 2 && !donkey_kong->hasThrown) { //tworzy nowa beczke, powiazanie z animacja rzucania beczki
 		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 		donkey_kong->hasThrown = 1;
 	}
-	else if (donkey_kong->get_frame_index() == 2)
+	else if (donkey_kong->get_frame_index() == 1)
 		donkey_kong->hasThrown = 0;
 	check_trophy();
 	check_ending();
@@ -463,17 +459,19 @@ void Game::hit_barrel() {
 
 		if (player->isCollision(barrel) && barrel->player_hit == 0) {
 			player->lives--;
-			if (player->lives == 0) //zerowac dane gry
+			if (player->lives == 0) {
 				menu = 1;
+				reset_game_state();
+			}
+			else
+				game_paused = 1;
 			barrel->player_hit = 1;
 			barrels.remove_all();
 			game_started = 0;
-			game_paused = 1;
 			player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 		}
 		else if (barrel->checkpoint1 && barrel->checkpoint2 && barrel->checkpoint3 && barrel->player_jump == 0 && barrel->player_hit == 0) {
 			player->score+=100;
-			//barrel->player_hit = 1;
 			barrel->player_jump = 1;
 			score_plate->set_new_plate(plus100_tex, worldTime);
 		}
@@ -494,7 +492,7 @@ void Game::change_map(int map_number) {
 }
 
 //sprawdza, czy gracz dotarl do konca mapy i zmienia ja
-void Game::check_ending() { //TODO: sprawdzanie wykoniania wczeœniejszych map, 3! mozliwosci (oflaguj jako skonczona, zmien wskaznik na dostepna); zeruj dane beczek
+void Game::check_ending() {
 	if (player->isCollision(map->ending_area)) {
 		map->set_ending = 1;
 	}
@@ -513,7 +511,7 @@ void Game::check_ending() { //TODO: sprawdzanie wykoniania wczeœniejszych map, 3
 		}
 
 		int isFinished = 1;
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < MAP_COUNT; i++) {
 			if (maps_completed[i] == 0) {
 				change_map(i + 1);
 				isFinished = 0;
@@ -572,6 +570,26 @@ void Game::handle_menu() {
 		}
 		mk.enter = 0;
 	}
+	else if (mk.exit) {
+		reset_game_state();
+		mk.exit = 0;
+	}
+}
+
+void Game::reset_game_state() {
+	player = new Player(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT - 2, screen);
+	worldTime = 0.0;
+	for (int i = 0; i < MAP_COUNT; i++)
+		maps_completed[i] = 0;
+	map1->reset();
+	map2->reset();
+	map3->reset();
+	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
+	scoreboard_mode = 0;
+	map_mode = 0;
+	game_paused = 0;
+	game_started = 0;
+	menu = 1;
 }
 
 void Game::stop() {

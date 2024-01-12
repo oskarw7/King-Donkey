@@ -4,12 +4,12 @@ void DonkeyKong::draw(double time) {
 	animation->draw_frame(screen, x, y, time);
 }
 
-//zwroc indeks pierwszej lub ostatniej klatki animacji, w przeciwnym wypadku -1
+//zwroc indeks ostatniej lub srodkowej klatki animacji, w przeciwnym wypadku -1
 int DonkeyKong::get_frame_index() {
-	if (animation->get_index() == 0)
-		return 0;
-	else if (animation->get_index() == 2)
+	if (animation->get_index() == 2)
 		return 2;
+	else if (animation->get_index() == 1)
+		return 1;
 	return -1;
 		
 }

@@ -4,7 +4,6 @@ Object::Object(double x, double y, double width, double height, SDL_Surface* scr
 	this->y = y;
 	this->width = width;
 	this->height = height;
-	this->frame_width = frame_width;
 	this->screen = screen;
 }
 

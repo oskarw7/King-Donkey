@@ -18,10 +18,10 @@ private:
 	int frame_index; //obecny indeks klatki
 	int frame_count;
 	int frame_width;
-	SDL_Surface* sprite;
-	SDL_Rect rect;
 	double time_interval; //czas trwania jednej klatki
 	double last_time;
+	SDL_Surface* sprite;
+	SDL_Rect rect;
 };
 
 #endif

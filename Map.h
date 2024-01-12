@@ -9,19 +9,17 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAP_HEIGHT 21 //pixele
-#define MAP_WIDTH 25 //pixele
 #define MAP_PATH_LENGTH 17 
-#define FLOOR_SIZE 32 //pixele
-#define LADDER_SIZE 32 //pixele
-#define PRINCESS_WIDTH 23 //pixele
-#define PRINCESS_HEIGHT 32 //pixele
-#define ENDING_AREA_WIDTH 32*3 //pixele
-#define ENDING_AREA_HEIGHT PRINCESS_HEIGHT/20 //pixele
-#define TROPHY_WIDTH 18 //pixele
-#define TROPHY_HEIGHT 20 //pixele
-#define STANDING_BARREL_WIDTH 19 //pixele
-#define STANDING_BARREL_HEIGHT 29 //pixele
+#define FLOOR_SIZE 32							//pixele
+#define LADDER_SIZE 32							//pixele
+#define PRINCESS_WIDTH 23						//pixele
+#define PRINCESS_HEIGHT 32						//pixele
+#define ENDING_AREA_WIDTH 32*3					//pixele
+#define ENDING_AREA_HEIGHT PRINCESS_HEIGHT/20	//pixele
+#define TROPHY_WIDTH 18							//pixele
+#define TROPHY_HEIGHT 20						//pixele
+#define STANDING_BARREL_WIDTH 19				//pixele
+#define STANDING_BARREL_HEIGHT 29				//pixele
 
 
 class Map {
@@ -40,6 +38,7 @@ public:
 	ObjectList standing_barrels;
 
 	void draw();
+	void reset();
 	~Map();
 private:
 	SDL_Surface* screen;

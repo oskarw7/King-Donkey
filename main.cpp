@@ -16,6 +16,7 @@ extern "C"
 #endif
 
 int main(int argc, char **argv) {
+	//klasa stanu gry; przechowuje dane oraz pelni funkcje kontrolera obiektow i logiki gry
 	Game game;
 
 	return 0;

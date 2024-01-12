@@ -33,7 +33,6 @@ protected:
 	double y;
 	double width;
 	double height;
-	int frame_width;
 	SDL_Surface* screen;
 	void load_error(char* path);
 private:
