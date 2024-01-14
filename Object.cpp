@@ -47,7 +47,7 @@ int Object::check_broad_area(Object* a) {
 	return 0;
 }
 
-//ustawia prog bledu wynikajacy z niskiej predkosci/niskich fps na podstawie grawitacji
+//ustawia prog bledu wynikajacy z duzej predkosci/niskich fps na podstawie grawitacji
 double Object::set_refresh_margin() {
 	double fraction;
 	if (modf(GRAVITY, &fraction) == 0)

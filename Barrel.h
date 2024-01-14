@@ -50,9 +50,6 @@ public:
 	void barrel_gravity(Map* map, double delta);
 	int isOut();
 
-	double velocity_x;
-	double velocity_y;
-
 	Object* jump_hitbox1;
 	Object* jump_hitbox2;
 	Object* jump_hitbox3;
@@ -72,6 +69,8 @@ public:
 
 	~Barrel();
 private:
+	double velocity_x;
+	double velocity_y;
 	int change_direction;
 	int vector;
 

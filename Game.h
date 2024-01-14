@@ -24,6 +24,7 @@ extern "C" {
 #define SCREEN_WIDTH 800		//pixele
 #define SCREEN_HEIGHT 750		//pixele
 #define MAP_COUNT 3
+#define BUFFER_SIZE 128
 
 #define MENU_BOX_WIDTH 300		//pixele
 #define MENU_BOX_HEIGHT 50		//pixele
@@ -60,6 +61,7 @@ struct PressedKeys {
 	int space;
 };
 
+//przechowuje informacje o klawiszach menu
 struct MenuKeys {
 	int scroll_up;
 	int scroll_down;
@@ -132,10 +134,12 @@ private:
 	void check_static_animations();
 	void draw_lives();
 	void manage_time(double* delta, double* t1, double* t2, double* worldTime, double* fpsTimer, double* fps, int* frames);
+	void update_barrels(double delta);
 	void hit_barrel();
 	void change_map(int map_number);
 	void check_ending();
 	void check_trophy();
+	void set_new_game();
 	void reset_game_state();
 	void stop();
 };

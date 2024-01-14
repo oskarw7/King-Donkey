@@ -26,7 +26,6 @@ Game::Game() {
 	scoreboard_mode = 0;
 
 	start();
-
 }
 
 //generuje okno nowej gry
@@ -140,20 +139,15 @@ void Game::load_error(SDL_Surface* surface, char* path) {
 void Game::start() {
 	int quit = 0;
 	int frames = 0;
-	double t1 = SDL_GetTicks();
-	double t2;
-	double fpsTimer = 0;
-	double fps = 0;
-	double delta = 0;
+	double t1 = SDL_GetTicks(), t2;
+	double fpsTimer = 0, fps = 0, delta = 0;
 	worldTime = 0;
 
 	while (!quit) {
 		manage_time(&delta, &t1, &t2, &worldTime, &fpsTimer, &fps, &frames);
 		render();
-		if (game_started)
-			update(delta);
-		if (menu)
-			handle_menu();
+		if (game_started) { update(delta); } //wybor kontrolera
+		if (menu) { handle_menu(); } //wybor kontrolera
 		SDL_Keycode key;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -167,47 +161,31 @@ void Game::start() {
 					pk.down = 1;
 					mk.scroll_down = 1;
 				}
-				else if (key == SDLK_LEFT)
-					pk.left = 1;
-				else if (key == SDLK_RIGHT)
-					pk.right = 1;
-				else if (key == SDLK_SPACE)
-					pk.space = 1;
-				else if (key == SDLK_RETURN)
-					mk.enter = 1;
+				else if (key == SDLK_LEFT) { pk.left = 1; }
+				else if (key == SDLK_RIGHT) { pk.right = 1; }
+				else if (key == SDLK_SPACE) { pk.space = 1; }
+				else if (key == SDLK_RETURN) { mk.enter = 1; }
 				else if ((scoreboard_mode || map_mode || game_paused) && key == SDLK_q) {
 					menu = 1;
 					mk.exit = 1;
 				}
-				else if (map_mode && key == SDLK_n) {
-					map_mode = 0;
-					game_started = 1;
-				}
-				else if (map_mode && key == SDLK_1)
-					change_map(1);
-				else if (map_mode && key == SDLK_2)
-					change_map(2);
-				else if (map_mode && key == SDLK_3)
-					change_map(3);
+				else if ((!menu && !scoreboard_mode) && key == SDLK_n) {set_new_game(); }
+				else if (map_mode && key == SDLK_1) { change_map(1); }
+				else if (map_mode && key == SDLK_2) { change_map(2); }
+				else if (map_mode && key == SDLK_3) { change_map(3); }
 				else if (key == SDLK_c && game_paused) {
 					game_paused = 0;
 					game_started = 1;
 				}
-				else if (key == SDLK_ESCAPE)
-					quit = 1;
+				else if (key == SDLK_ESCAPE) { quit = 1; }
 				break;
 			case SDL_KEYUP:
 				key = event.key.keysym.sym;
-				if (key == SDLK_UP)
-					pk.up = 0;
-				else if (key == SDLK_DOWN)
-					pk.down = 0;
-				else if (key == SDLK_LEFT)
-					pk.left = 0;
-				else if (key == SDLK_RIGHT)
-					pk.right = 0;
-				else if (key == SDLK_SPACE)
-					pk.space = 0;
+				if (key == SDLK_UP) { pk.up = 0; }
+				else if (key == SDLK_DOWN) { pk.down = 0; }
+				else if (key == SDLK_LEFT) { pk.left = 0; }
+				else if (key == SDLK_RIGHT) { pk.right = 0; }
+				else if (key == SDLK_SPACE) { pk.space = 0; }
 				break;
 			case SDL_QUIT:
 				quit = 1;
@@ -219,7 +197,7 @@ void Game::start() {
 	stop();
 }
 
-//oblicza i zwraca czas oraz ilosc klatek na sekunde
+//oblicza i uaktualnia czas oraz ilosc klatek na sekunde
 void Game::manage_time(double* delta, double* t1, double *t2, double* worldTime, double* fpsTimer, double* fps, int* frames) {
 	// w tym momencie t2-t1 to czas w milisekundach, jaki uplyna³ od ostatniego narysowania ekranu
 	// delta to ten sam czas w sekundach
@@ -240,15 +218,19 @@ void Game::manage_time(double* delta, double* t1, double *t2, double* worldTime,
 }
 
 void Game::render_menu(Colors colors) {
-	char text[128];
+	char text[BUFFER_SIZE];
+
 	DrawSurface(screen, logo_tex, screen->w / 2, screen->h / 2 - 175);
+
 	sprintf(text, "DISCLAIMER: This project was made for educational purposes only.");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 20, text, charset);
 	sprintf(text, "I undertake not to benefit from it financially and post it online.");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 40, text, charset);
 	sprintf(text, "(Dear Nintendo, don't sue me, please)");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 60, text, charset);
+
 	DrawRectangle(screen, screen->w / 2 - MENU_BOX_WIDTH / 2, MENU_BOX_START_Y + mk.index * MENU_BOX_OFFSET, MENU_BOX_WIDTH, MENU_BOX_HEIGHT, colors.blue, colors.blue);
+
 	sprintf(text, "CHOOSE MAP");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, MENU_BOX_START_Y + MENU_BOX_OFFSET + MENU_BOX_HEIGHT / 2, text, charset);
 	sprintf(text, "SCOREBOARD");
@@ -264,24 +246,29 @@ void Game::render_menu(Colors colors) {
 }
 
 void draw_pause_screen(Player* player, SDL_Surface* screen, SDL_Surface* charset, Colors colors) {
-	char text[128];
+	char text[BUFFER_SIZE];
+
 	SDL_FillRect(screen, NULL, colors.red);
+
 	DrawRectangle(screen, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 3, 6 * SCREEN_WIDTH / 8, SCREEN_HEIGHT / 3, colors.red, colors.black);
+
 	sprintf(text, "Score: %d", player->score);
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 40, text, charset);
 	sprintf(text, "You have lost life. Do you want to continue?");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 - 20, text, charset);
-	sprintf(text, "C - CONTINUE");
+	sprintf(text, "N - NEW GAME");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2, text, charset);
-	sprintf(text, "Q - RETURN TO MENU");
+	sprintf(text, "C - CONTINUE");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 20, text, charset);
-	sprintf(text, "ESC - QUIT");
+	sprintf(text, "Q - RETURN TO MENU");
 	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 40, text, charset);
+	sprintf(text, "ESC - QUIT");
+	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, SCREEN_HEIGHT / 2 + 60, text, charset);
 }
 
 //rysowanie obiektow na ekranie
 void Game::render() {
-	char text[128];
+	char text[BUFFER_SIZE];
 	struct Colors colors;
 	colors.black = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
 	colors.green = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
@@ -293,9 +280,7 @@ void Game::render() {
 		DrawRectangle(screen, 4, 4, SCREEN_WIDTH - 8, 50, colors.red, colors.blue);
 
 		char* second_bind = "";
-		if (!game_started) {
-			second_bind = "1-3 - CHOOSE MAP  |  N - NEW GAME  |  Q - RETURN TO MENU  |  ";
-		}
+		(!game_started)?(second_bind = "1-3 - CHOOSE MAP  |  N - START NEW GAME  |  Q - RETURN TO MENU  |  "):(second_bind = "N - NEW GAME  |  ");
 		sprintf(text, "%sESC - QUIT", second_bind);
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);
 
@@ -317,17 +302,15 @@ void Game::render() {
 		donkey_kong->draw(worldTime);
 		player->draw(worldTime, map);
 
-		if (game_paused) {
+		if (game_paused)
 			draw_pause_screen(player, screen, charset, colors);
-		}
 		if (scoreboard_mode) {
 			SDL_FillRect(screen, NULL, colors.black);
 			sprintf(text, "This option has not been implemented yet. Q - RETURN TO MENU");
 			DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, screen->h / 2, text, charset);
 		}
-	} else {
+	} else
 		render_menu(colors);
-	}
 	SDL_UpdateTexture(scrtex, NULL, screen->pixels, screen->pitch);
 	//		SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, scrtex, NULL, NULL);
@@ -337,10 +320,8 @@ void Game::render() {
 //aktualizacja fizyki obiektow
 void Game::update(double delta) {
 	player->players_gravity(delta, map);
-	for (int i = 0; i < barrels.get_size(); i++)
-		barrels.get(i)->barrel_gravity(map, delta);
 
-	check_static_animations();
+	check_static_animations(); 
 	double mx = 0, my = 0;
 	if (pk.up) {
 		if (player->on_ladder(map)) {
@@ -382,20 +363,14 @@ void Game::update(double delta) {
 		}
 	}
 	player->player_move(mx, my);
-	for (int i = 0; i < barrels.get_size(); i++) {
-		barrels.get(i)->update(map, delta);
-		if (barrels.get(i)->isOut()) {
-			barrels.remove_first();
-		}
-	}
 
-	hit_barrel();
+	update_barrels(delta);
+
 	if (donkey_kong->get_frame_index() == 2 && !donkey_kong->hasThrown) { //tworzy nowa beczke, powiazanie z animacja rzucania beczki
 		barrels.add(new Barrel(BARREL_START_X, BARREL_START_Y, BARREL_WIDTH, screen));
 		donkey_kong->hasThrown = 1;
 	}
-	else if (donkey_kong->get_frame_index() == 1)
-		donkey_kong->hasThrown = 0;
+	else if (donkey_kong->get_frame_index() == 1) { donkey_kong->hasThrown = 0; }
 	check_trophy();
 	check_ending();
 }
@@ -420,10 +395,26 @@ void Game::check_static_animations() {
 	}
 }
 
+void Game::update_barrels(double delta) {
+	for (int i = 0; i < barrels.get_size(); i++) {
+		barrels.get(i)->barrel_gravity(map, delta);
+	}
+
+	for (int i = 0; i < barrels.get_size(); i++) {
+		barrels.get(i)->update(map, delta);
+		if (barrels.get(i)->isOut()) {
+			barrels.remove_first();
+		}
+	}
+
+	hit_barrel();
+}
+
 //sprawdza kolizje gracza z beczkami oraz sprawdza, czy przeskoczyl beczke
 void Game::hit_barrel() {
 	for (int i = 0; i < barrels.get_size(); i++) {
 		Barrel* barrel = barrels.get(i);
+
 		if (player->isCollision(barrel->jump_hitbox1))
 			barrel->checkpoint1 = 1;
 		if (player->isCollision(barrel->jump_hitbox2))
@@ -445,12 +436,11 @@ void Game::hit_barrel() {
 			game_started = 0;
 			player->player_move(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT);
 		}
-		else if (barrel->checkpoint1 && barrel->checkpoint2 && barrel->checkpoint3 && barrel->player_jump == 0 && barrel->player_hit == 0) {
+		else if (barrel->checkpoint1 && barrel->checkpoint2 && barrel->checkpoint3 && barrel->player_jump == 0 && barrel->player_hit == 0 && !player->on_ladder(map)) {
 			player->score+=100;
 			barrel->player_jump = 1;
 			score_plate->set_new_plate(plus100_tex, worldTime);
 		}
-		
 	}
 }
 
@@ -531,6 +521,7 @@ void Game::init_keys() {
 	mk.index = 1;
 }
 
+//obsluga klawiszy w menu
 void Game::handle_menu() {
 	if (mk.scroll_up) {
 		if(mk.index==1)
@@ -566,6 +557,18 @@ void Game::handle_menu() {
 	}
 }
 
+void Game::set_new_game() {
+	if (map_mode) {
+		map_mode = 0;
+		game_started = 1;
+	}
+	else {
+		reset_game_state();
+		menu = 0;
+		map_mode = 1;
+	}
+}
+
 void Game::reset_game_state() {
 	player = new Player(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT - 2, screen);
 	worldTime = 0.0;
@@ -574,7 +577,10 @@ void Game::reset_game_state() {
 	map1->reset();
 	map2->reset();
 	map3->reset();
-	donkey_kong = new DonkeyKong(KONG_START_X, KONG_START_Y, donkey_kong_tex, screen);
+	map = map1;
+	score_plate->reset();
+	donkey_kong->get_animation()->reset();
+	barrels.remove_all();
 	scoreboard_mode = 0;
 	map_mode = 0;
 	game_paused = 0;

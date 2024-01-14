@@ -19,8 +19,8 @@ void Animation::next_frame() {
 
 void Animation::draw_frame(SDL_Surface* screen, int x, int y, double time) {
 	rect.x = frame_index * frame_width;
-	SDL_Rect position = { x, y, frame_width, sprite->h };
-	SDL_BlitSurface(sprite, &rect, screen, &position);
+	SDL_Rect dest = { x, y, frame_width, sprite->h };
+	SDL_BlitSurface(sprite, &rect, screen, &dest);
 	if (time - last_time >= time_interval) {
 		next_frame();
 		last_time = time;
@@ -30,6 +30,7 @@ void Animation::draw_frame(SDL_Surface* screen, int x, int y, double time) {
 
 void Animation::reset() {
 	frame_index = 0;
+	last_time = 0;
 }
 
 Animation::~Animation() {

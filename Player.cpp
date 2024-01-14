@@ -71,50 +71,41 @@ void Player::players_gravity(double time, Map* map) {
 
 void Player::load_player_graphics() {
 	run_left_tex = SDL_LoadBMP(RUN_LEFT_PATH);
-	if (run_left_tex == NULL) {
+	if (run_left_tex == NULL)
 		load_error(RUN_LEFT_PATH);
-	};
 
 	run_right_tex = SDL_LoadBMP(RUN_RIGHT_PATH);
-	if (run_right_tex == NULL) {
+	if (run_right_tex == NULL)
 		load_error(RUN_RIGHT_PATH);
-	};
 
 	climb_tex = SDL_LoadBMP(CLIMB_PATH);
-	if (climb_tex == NULL) {
-		load_error(CLIMB_PATH);;
-	};
+	if (climb_tex == NULL)
+		load_error(CLIMB_PATH);
 
 	steady_climb_tex = SDL_LoadBMP(STEADY_CLIMB_PATH);
-	if (steady_climb_tex == NULL) {
+	if (steady_climb_tex == NULL) 
 		load_error(CLIMB_PATH);
-	};
 
 	back_tex = SDL_LoadBMP(BACK_PATH);
-	if (back_tex == NULL) {
+	if (back_tex == NULL) 
 		load_error(CLIMB_PATH);
-	};
 
 
 	stand_left_tex = SDL_LoadBMP(STAND_LEFT_PATH);
-	if (stand_left_tex == NULL) {
+	if (stand_left_tex == NULL) 
 		load_error(STAND_LEFT_PATH);
-	};
 
 	stand_right_tex = SDL_LoadBMP(STAND_RIGHT_PATH);
-	if (stand_right_tex == NULL) {
+	if (stand_right_tex == NULL) 
 		load_error(STAND_RIGHT_PATH);
-	};
 
 	jump_left_tex = SDL_LoadBMP(JUMP_LEFT_PATH);
-	if (jump_left_tex == NULL) {
+	if (jump_left_tex == NULL) 
 		load_error(JUMP_LEFT_PATH);
-	};
 
 	jump_right_tex = SDL_LoadBMP(JUMP_RIGHT_PATH);
-	if (jump_right_tex == NULL) {
+	if (jump_right_tex == NULL) 
 		load_error(JUMP_RIGHT_PATH);
-	};
 
 	animations.run_left = new Animation(run_left_tex, PLAYER_WIDTH, 0.2);
 	animations.run_right = new Animation(run_right_tex, PLAYER_WIDTH, 0.2);
@@ -130,6 +121,7 @@ void Player::load_player_graphics() {
 void Player::draw(double time, Map* map) {
 	current_animation->draw_frame(screen, (int)x, (int)y, time);
 }
+
 
 Player::~Player() {
 	delete current_animation;

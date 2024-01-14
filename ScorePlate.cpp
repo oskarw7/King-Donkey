@@ -18,6 +18,12 @@ void ScorePlate::check_draw(int x, int y, double time) {
 	}
 }
 
+void ScorePlate::reset() {
+	this->current_score_plate = NULL;
+	this->start_time = 0.0;
+	this->isShown = 0;
+}
+
 ScorePlate::~ScorePlate() {
 	SDL_FreeSurface(current_score_plate);
 	SDL_FreeSurface(screen);

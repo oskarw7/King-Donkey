@@ -25,6 +25,7 @@ public:
 	};
 	void set_new_plate(SDL_Surface* texture, double time);
 	void check_draw(int x, int y, double time);
+	void reset();
 
 	int isShown; //czy wyswietlac
 	double start_time; //czas rozpoczecia wyswietlania

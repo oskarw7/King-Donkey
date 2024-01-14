@@ -26,9 +26,9 @@ extern "C" {
 #define PLAYER_HEIGHT 30.0			//pixele
 #define PLAYER_VELOCITY_X 150.0		//pixele/s
 #define CLIMB_VELOCITY 125.0		//pixele/s
-#define PLAYER_LIVES 4				//ilosc zyc
 #define JUMP_VELOCITY 200.0			//pixele/s
 #define SPEED_X_COOLDOWN 140.0		//pixele/s
+#define PLAYER_LIVES 4				//ilosc zyc
 
 //animacje gracza
 struct PlayerAnimations {
@@ -46,6 +46,8 @@ struct PlayerAnimations {
 class Player : public Object {
 public:
 	Player(double x, double y, SDL_Surface* screen) : Object(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, screen) {
+		this->start_x = x;
+		this->start_y = y;
 		this->velocity_x = PLAYER_VELOCITY_X;
 		this->velocity_y = 0;
 		this->climb_velocity = CLIMB_VELOCITY;
@@ -74,6 +76,8 @@ public:
 
 	~Player();
 private:
+	double start_x;
+	double start_y;
 	SDL_Surface* run_left_tex;
 	SDL_Surface* run_right_tex;
 	SDL_Surface* climb_tex;

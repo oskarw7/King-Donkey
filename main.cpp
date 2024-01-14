@@ -10,7 +10,6 @@ extern "C" {
 
 #include "Game.h"
 
-// main
 #ifdef __cplusplus
 extern "C"
 #endif

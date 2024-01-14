@@ -17,9 +17,10 @@ public:
 		animation = new Animation(texture, KONG_WIDTH, 1);
 		this->hasThrown = 0;
 	};
+	int hasThrown; //flaga, czy rzucil beczke
+
 	void draw(double time);
 	int get_frame_index();
-	int hasThrown; //flaga, czy rzucil beczke
 	Animation* get_animation() { return animation; };
 	~DonkeyKong();
 private:
