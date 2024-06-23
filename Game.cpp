@@ -116,24 +116,7 @@ void Game::load_graphics() {
 //w przypadku bledu ladowania bitmapy
 void Game::load_error(SDL_Surface* surface, char* path) {
 	printf("SDL_LoadBMP(%s) error: %s\n", path, SDL_GetError());
-	SDL_FreeSurface(screen);
-	SDL_FreeSurface(charset);
-	SDL_FreeSurface(logo_tex);
-	SDL_FreeSurface(floor_tex);
-	SDL_FreeSurface(ladder_tex);
-	SDL_FreeSurface(barrel_tex);
-	SDL_FreeSurface(standing_barrel_tex);
-	SDL_FreeSurface(princess_tex);
-	SDL_FreeSurface(trophy_tex);
-	SDL_FreeSurface(heart_tex);
-	SDL_FreeSurface(donkey_kong_tex);
-
-	SDL_DestroyTexture(scrtex);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-
-	SDL_Quit();
-	exit(1);
+	stop();
 }
 
 void Game::start() {
@@ -222,13 +205,6 @@ void Game::render_menu(Colors colors) {
 
 	DrawSurface(screen, logo_tex, screen->w / 2, screen->h / 2 - 175);
 
-	sprintf(text, "DISCLAIMER: This project was made for educational purposes only.");
-	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 20, text, charset);
-	sprintf(text, "I undertake not to benefit from it financially and post it online.");
-	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 40, text, charset);
-	sprintf(text, "(Dear Nintendo, don't sue me, please)");
-	DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 60, text, charset);
-
 	DrawRectangle(screen, screen->w / 2 - MENU_BOX_WIDTH / 2, MENU_BOX_START_Y + mk.index * MENU_BOX_OFFSET, MENU_BOX_WIDTH, MENU_BOX_HEIGHT, colors.blue, colors.blue);
 
 	sprintf(text, "CHOOSE MAP");
@@ -287,7 +263,7 @@ void Game::render() {
 		sprintf(text, "GAMETIME: %.1lf s", worldTime);
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 26, text, charset);
 
-		sprintf(text, "IMPLEMENTED POINTS: 1, 2, 3, 4, A, B, C, D, E, F, I");
+		sprintf(text, "GITHUB: oskarw7");
 		DrawString(screen, screen->w / 2 - strlen(text) * 8 / 2, 42, text, charset);
 
 		sprintf(text, "Score: %d", player->score);
@@ -570,6 +546,7 @@ void Game::set_new_game() {
 }
 
 void Game::reset_game_state() {
+	delete player;
 	player = new Player(SCREEN_WIDTH - PLAYER_WIDTH, SCREEN_HEIGHT - 2 * PLAYER_HEIGHT - 2, screen);
 	worldTime = 0.0;
 	for (int i = 0; i < MAP_COUNT; i++)
@@ -589,17 +566,27 @@ void Game::reset_game_state() {
 }
 
 void Game::stop() {
+	delete player;
+	delete map1;
+	delete map2;
+	delete map3;
+	delete donkey_kong;
+	delete score_plate;
+
 	SDL_FreeSurface(screen);
 	SDL_FreeSurface(charset);
 	SDL_FreeSurface(logo_tex);
 	SDL_FreeSurface(floor_tex);
+	SDL_FreeSurface(floor2_tex);
+	SDL_FreeSurface(floor3_tex);
 	SDL_FreeSurface(ladder_tex);
 	SDL_FreeSurface(barrel_tex);
 	SDL_FreeSurface(standing_barrel_tex);
 	SDL_FreeSurface(princess_tex);
 	SDL_FreeSurface(trophy_tex);
 	SDL_FreeSurface(heart_tex);
-	SDL_FreeSurface(donkey_kong_tex);
+	SDL_FreeSurface(plus100_tex);
+	SDL_FreeSurface(plus300_tex);
 
 	SDL_DestroyTexture(scrtex);
 	SDL_DestroyRenderer(renderer);

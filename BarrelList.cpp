@@ -48,12 +48,6 @@ Barrel* BarrelList::get(int i) {
 
 BarrelList::~BarrelList() {
 	for (int i = 0; i < size; i++) {
-		delete barrels[i]->animations.falling;
-		delete barrels[i]->animations.rolling;
-		delete barrels[i]->current_animation;
-		delete barrels[i]->texture;
-		delete barrels[i]->rolling_tex;
-		delete barrels[i]->falling_tex;
 		delete barrels[i];
 	}
 	delete[] barrels;

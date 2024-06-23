@@ -25,6 +25,5 @@ void ScorePlate::reset() {
 }
 
 ScorePlate::~ScorePlate() {
-	SDL_FreeSurface(current_score_plate);
-	SDL_FreeSurface(screen);
+	
 }

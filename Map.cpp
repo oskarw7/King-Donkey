@@ -91,6 +91,7 @@ void Map::reset() {
 }
 
 Map::~Map() {
-	SDL_FreeSurface(screen);
-	SDL_FreeSurface(charset);
+	delete trophy;
+	delete princess;
+	delete ending_area;
 }

@@ -79,4 +79,6 @@ Barrel::~Barrel() {
 	delete jump_hitbox1;
 	delete jump_hitbox2;
 	delete jump_hitbox3;
+	delete animations.rolling;
+	delete animations.falling;
 }

@@ -124,14 +124,13 @@ void Player::draw(double time, Map* map) {
 
 
 Player::~Player() {
-	delete current_animation;
-	SDL_FreeSurface(run_left_tex);
-	SDL_FreeSurface(run_right_tex);
-	SDL_FreeSurface(climb_tex);
-	SDL_FreeSurface(steady_climb_tex);
-	SDL_FreeSurface(back_tex);
-	SDL_FreeSurface(stand_left_tex);
-	SDL_FreeSurface(stand_right_tex);
-	SDL_FreeSurface(jump_left_tex);
-	SDL_FreeSurface(jump_right_tex);
+	delete animations.run_left;
+	delete animations.run_right;
+	delete animations.climb;
+	delete animations.steady_climb;
+	delete animations.back;
+	delete animations.stand_left;
+	delete animations.stand_right;
+	delete animations.jump_left;
+	delete animations.jump_right;
 }

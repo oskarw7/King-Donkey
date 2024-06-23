@@ -69,5 +69,5 @@ void Object::move(double mx, double my) {
 }
 
 Object::~Object() {
-	SDL_FreeSurface(screen);
+	
 }

@@ -3,6 +3,7 @@
 /Release
 /SDL2-2.0.10
 /x64
+libSDL2.a
 szablon2vs17.vcxproj
 szablon2vs19.vcxproj
 szablon2vs19.sln

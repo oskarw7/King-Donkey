@@ -5,5 +5,5 @@ void StaticObject::draw() {
 }
 
 StaticObject::~StaticObject() {
-	SDL_FreeSurface(texture);
+	
 }
